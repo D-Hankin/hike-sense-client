@@ -1,1 +1,1 @@
-##HikeSense##
+HikeSense
