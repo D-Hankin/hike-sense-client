@@ -10,7 +10,7 @@ function App() {
     if (process.env.NODE_ENV === 'development') {
       setModeUrl('http://localhost:8080');
     } else {
-      setModeUrl('https://deployedurlhere.com');
+      setModeUrl('https://goldfish-app-lmlas.ondigitalocean.app/');
     }
   }, []);
 

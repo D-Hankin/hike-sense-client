@@ -5,19 +5,17 @@ interface TestPostProps {
 function TestPost(props: TestPostProps) {
 
     const sendTestPost = async () => {
-        const fetchUrl: string = props.modeUrl + 'users/test-post';
+        const fetchUrl: string = props.modeUrl + '/create-account';
         fetch(fetchUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: "user@example.com",
+                username: "TESTTEST@example.com",
                 password: "securePassword123",
                 firstName: "John",
-                lastName: "Doe",
-                hikes: [], 
-                friends: [] 
+                lastName: "Doe"
             }),
         })
             .then(response => response.text())
