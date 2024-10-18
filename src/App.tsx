@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import CreateAccount from './createAccount/CreateAccount';
 import Login from './login/Login';
+import PlanHike from './planHike/PlanHike';
 
 interface User {
   id: string; 
@@ -52,11 +53,9 @@ function App() {
   const [user, setUser] = useState<User>({} as User);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      setModeUrl('http://localhost:8080');
-    } else {
+    
       setModeUrl('https://goldfish-app-lmlas.ondigitalocean.app');
-    }
+    
     if (localStorage.getItem('token')) {
       setIsLoggedIn(true);
     }
@@ -101,6 +100,7 @@ function App() {
     <>
       <p>Welcome {user.firstName}!</p>
       <button onClick={handleLogout}>Logout</button>
+      <PlanHike />
     </>
   )}
     </>
