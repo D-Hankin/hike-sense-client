@@ -59,7 +59,8 @@ function App() {
   const [user, setUser] = useState<User>({} as User);
 
   useEffect(() => {
-    setModeUrl('https://goldfish-app-lmlas.ondigitalocean.app');
+    if (process.env.NODE_ENV === 'development') setModeUrl('http://localhost:8080');
+    else setModeUrl('https://stingray-app-ewlud.ondigitalocean.app/');
     
     if (localStorage.getItem('token')) {
       setIsLoggedIn(true);
