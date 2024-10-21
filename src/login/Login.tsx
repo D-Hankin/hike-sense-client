@@ -55,7 +55,7 @@ function Login(props: LoginProps) {
 
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault();
-        fetch(props.modeUrl + '/login', {
+        fetch(props.modeUrl + '/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
