@@ -1,0 +1,12 @@
+.logoutBtn {
+    width: fit-content;
+    position: absolute; 
+    top: 50px;          
+    right: 40px;        
+    padding: 10px 15px; 
+    border: none;       
+    border-radius: 5px; 
+    cursor: pointer;    
+    font-size: 16px;    
+}
+
