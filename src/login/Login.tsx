@@ -14,6 +14,7 @@ interface LoginProps {
         lastName: string;
         hikes: Hike[];
         friends: string[]; 
+        subscriptionStatus: string;
     }
     
     interface Hike {

@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import CreateAccount from './createAccount/CreateAccount';
 import Login from './login/Login';
+import PlanHike from './planHike/PlanHike';
+import Logout from './logout/Logout';
+import UserOptions from './userOptions/UserOptions';
+import FriendsOnline from './friendsOnline/FriendsOnline';
+import Alerts from './alerts/Alerts';
+import LatestHike from './latestHike/LatestHike';
+import Weather from './weather/Weather';
 
 interface User {
   id: string; 
@@ -11,6 +18,7 @@ interface User {
   lastName: string;
   hikes: Hike[];
   friends: string[]; 
+  subscriptionStatus: string;
 }
 
 interface Hike {
@@ -45,27 +53,23 @@ interface Alert {
 }
 
 function App() {
-
   const [modeUrl, setModeUrl] = useState<string>('');
   const [buttonChoice, setButtonChoice] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<User>({} as User);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      setModeUrl('http://localhost:8080');
-    } else {
-      setModeUrl('https://goldfish-app-lmlas.ondigitalocean.app');
-    }
+    setModeUrl('https://goldfish-app-lmlas.ondigitalocean.app');
+    
     if (localStorage.getItem('token')) {
       setIsLoggedIn(true);
     }
   }, []);
 
-
-  function handleLogout(): void {
-    localStorage.removeItem('token');
+  const logoutCallback = () => {
     setIsLoggedIn(false);
+    setUser({} as User);
+    localStorage.removeItem('token');
   }
 
   function handleLoginSuccess(): void {
@@ -79,32 +83,55 @@ function App() {
 
   return (
     <>
-      <h1>HikeSense</h1>
-      { buttonChoice === '' && isLoggedIn === false ?
-      <>
-      <button onClick={() => setButtonChoice("logIn")}>Log in</button>
-      <p>or</p>
-      <button onClick={() => setButtonChoice("createAccount")}>Create Account</button>
-      </>
-      : isLoggedIn === false ? <button onClick={() => setButtonChoice("")}>Back</button>
-      : null
-      }
-      { buttonChoice === 'createAccount' ?
-      <CreateAccount modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject}/>
-      :
-      buttonChoice === 'logIn' ? 
-      <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject}/>
-      :
-      null
-      }
-       {isLoggedIn && (
-    <>
-      <p>Welcome {user.firstName}!</p>
-      <button onClick={handleLogout}>Logout</button>
-    </>
-  )}
+      {buttonChoice === '' && isLoggedIn === false ? (
+        <>
+          <h1>HikeSense</h1>
+          <button onClick={() => setButtonChoice("logIn")}>Log in</button>
+          <p>or</p>
+          <button onClick={() => setButtonChoice("createAccount")}>Create Account</button>
+        </>
+      ) : isLoggedIn === false ? (
+        <button onClick={() => setButtonChoice("")}>Back</button>
+      ) : null}
+
+      {buttonChoice === 'createAccount' ? (
+        <CreateAccount modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
+      ) : buttonChoice === 'logIn' ? (
+        <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
+      ) : null}
+
+      {isLoggedIn && (
+        <div className='mainBody'>
+            <Logout logoutCallback={logoutCallback} />
+            <div className='userOptionsDiv'>
+              <UserOptions user={user} />
+            </div>
+          <div className='header'>
+              <h1>HikeSense</h1>
+              <p className='welcomeMessage'>Welcome {user.firstName}!</p>
+          </div>
+
+          <div className='gridContainer'>
+            <div className='weatherDiv'>
+              <Weather />
+            </div>
+            <div className='alertsDiv'>
+              <Alerts />
+            </div>
+            <div className='friendsOnlineDiv'>
+              <FriendsOnline />
+            </div>
+            <div className='latestHikeDiv'>
+              <LatestHike />
+            </div>
+            <div className='planHikeDiv'>
+              <PlanHike />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
 
-export default App
+export default App;

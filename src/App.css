@@ -1,7 +1,62 @@
 #root {
-  max-width: 1280px;
+  max-width: 100vw;
+  width: 90%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
 
+.mainBody {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+  align-items: center; /* Center align items horizontally */
+  padding: 20px;
+  background-color: black; /* Light background for better contrast */
+  border-radius: 30px;
+}
+
+.header {
+  display: block;
+  align-items: center; /* Vertically center items */
+  width: 100%;
+  justify-content: space-between; /* Space between title and dropdown */
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin: auto; 
+}
+
+.welcomeMessage {
+  font-size: 1.2rem;
+  margin-top: 10px; /* Space between title and welcome message */
+}
+
+.userOptionsDiv {
+  margin-right: auto; /* Push user options to the left */
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Create a 2x2 grid */
+  gap: 20px; /* Space between grid items */
+  width: 100%;
+  max-width: 800px; /* Limit the width for better appearance */
+  margin-top: 20px; /* Space above the grid */
+}
+
+.weatherDiv, .alertsDiv, .friendsOnlineDiv, .latestHikeDiv, .planHikeDiv {
+  padding: 15px;
+  border-radius: 8px; /* Rounded corners */
+  background-color: #ffffff; /* White background for each card */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  background-color: darkgreen;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+  .gridContainer {
+    grid-template-columns: 1fr; /* Stack items in a single column on small screens */
+  }
+}
