@@ -58,7 +58,7 @@ function CreateAccount(props: TestPostProps) {
     const [error, setError] = React.useState<string>('');
 
     const sendCreateAccount = async () => {
-        const fetchUrl: string = props.modeUrl + '/create-account';
+        const fetchUrl: string = props.modeUrl + 'user/create-account';
         fetch(fetchUrl, {
             method: 'POST',
             headers: {
