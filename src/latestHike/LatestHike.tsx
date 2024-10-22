@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import { GoogleMap, Polyline } from "@react-google-maps/api";
+import React, { useEffect, useState } from "react";
+import { DirectionsRenderer, GoogleMap, Marker } from "@react-google-maps/api";
+import "./latestHike.css"
 
 interface User {
   id: string;
@@ -26,7 +27,7 @@ interface Hike {
   finishTime: string;
   distance: number;
   duration: number;
-  route: string; // This is the encoded polyline
+  route: string;
   isFavorite: boolean;
   avgHeartRate: number;
   avgTemp: number;
@@ -48,62 +49,55 @@ interface Props {
   user: User;
 }
 
+const containerStyle = {
+  width: "500px",
+  height: "500px",
+  borderRadius: "20px",
+};
+
 const LatestHike: React.FC<Props> = (props) => {
   const [latestHike, setLatestHike] = useState<Hike | null>(null);
-  const [path, setPath] = useState<{ lat: number; lng: number }[]>([]);
-  const mapRef = useRef<google.maps.Map | null>(null); // Create a ref for the map
-
-  const decodePolyline = (encoded: string): { lat: number; lng: number }[] => {
-    const coordinates: { lat: number; lng: number }[] = [];
-    let index = 0, lat = 0, lng = 0;
-
-    while (index < encoded.length) {
-      let b, shift = 0, result = 0;
-      do {
-        b = encoded.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      const dlat = ((result >> 1) ^ -(result & 1));
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      const dlng = ((result >> 1) ^ -(result & 1));
-      lng += dlng;
-
-      coordinates.push({ lat: lat / 1e5, lng: lng / 1e5 });
-    }
-
-    return coordinates;
-  };
-
-  const fitMapBounds = () => {
-    if (mapRef.current && path.length > 0) {
-      const bounds = new window.google.maps.LatLngBounds();
-      path.forEach((point) => bounds.extend(new window.google.maps.LatLng(point.lat, point.lng)));
-      mapRef.current.fitBounds(bounds); // Fit the bounds to the path
-    }
-  };
+  const [startLocation, setStartLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [finishLocation, setFinishLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [directions, setDirections] = useState<any>(null);
 
   useEffect(() => {
     const completedHike = props.user.hikes.find(hike => hike.completed);
     if (completedHike) {
+      console.log('Completed Hike:', completedHike);
       setLatestHike(completedHike);
-      const decodedPath = decodePolyline(completedHike.route);
-      console.log(decodedPath); // Log to check the path
-      setPath(decodedPath);
+      setStartLocation({
+        lat: completedHike.startLocation.latitude,
+        lng: completedHike.startLocation.longitude
+      })
+      setFinishLocation({
+        lat: completedHike.finishLocation.latitude,
+        lng: completedHike.finishLocation.longitude
+      })
     }
   }, [props.user.hikes]);
 
   useEffect(() => {
-    fitMapBounds(); // Adjust map bounds whenever the path changes
-  }, [path]);
+    if (startLocation && finishLocation) {
+      const directionsService = new window.google.maps.DirectionsService();
+      directionsService.route(
+        {
+          origin: startLocation,
+          destination: finishLocation,
+          travelMode: window.google.maps.TravelMode.WALKING,
+        },
+        (result, status) => {
+          if (status === window.google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          } else {
+            console.error(`Error fetching directions: ${status}`);
+          }
+        }
+      );
+    } else {
+      setDirections(null);
+    }
+  }, [startLocation, finishLocation]);
 
   return (
     <>
@@ -111,39 +105,28 @@ const LatestHike: React.FC<Props> = (props) => {
         <h3>Latest Hike</h3>
         {latestHike && <h3>{latestHike.name}</h3>}
       </div>
-      <div>
-        {path.length > 0 && (
-          <GoogleMap
-            onLoad={map => {
-              mapRef.current = map;
-            }}
-            mapContainerStyle={{ width: "500px", height: "500px", borderRadius: "20px" }}
-            center={{
-              lat: path.length > 0 ? path[0].lat : 0, // Prevent centering when path is empty
-              lng: path.length > 0 ? path[0].lng : 0,
-            }}
-            zoom={12} // This can be adjusted
-          >
-            <Polyline
-              path={path}
-              options={{
-                strokeColor: "#FF0000",
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-              }}
-            />
-          </GoogleMap>
-        )}
-      </div>
-      <ul className="hikeInfo">
-        {latestHike && (
-          <>
+      {startLocation && (
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={startLocation}
+          zoom={13}
+        >
+          {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png" />}
+          {finishLocation && <Marker position={finishLocation} />}
+          <Marker position={startLocation} />
+          {finishLocation && <Marker position={finishLocation} />}
+          {directions && (
+            <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
+          )}
+        </GoogleMap>
+      )}
+      {latestHike && (
+        <ul className="hikeInfo">  
             <li>Distance: {latestHike.distance} meters</li>
             <li>Time taken: {latestHike.duration} minutes</li>
             <li>Avg. heartrate: {latestHike.avgHeartRate} bpm</li>
-          </>
-        )}
-      </ul>
+        </ul>
+      )}
     </>
   );
 }

@@ -3,6 +3,8 @@
   width: 90%;
   margin: 0 auto;
   padding: 2rem;
+  display: block;
+  align-items: center;
   text-align: center;
 }
 
@@ -14,6 +16,7 @@
   padding: 20px;
   background-color: black; /* Light background for better contrast */
   border-radius: 30px;
+  margin: auto;
 }
 
 .header {
@@ -63,4 +66,8 @@ h1 {
 
 .planHikeDiv {
   height: fit-content;
+}
+
+.createAccountBtn {
+  width: fit-content;
 }

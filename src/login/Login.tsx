@@ -1,4 +1,5 @@
 import React, { FormEvent } from 'react'
+import "./login.css"
 
 interface LoginProps {
     modeUrl: string;
@@ -81,8 +82,6 @@ function Login(props: LoginProps) {
     }
 
   return (
-    <>
-        <div>Log in</div>
         <form onSubmit={handleSubmit}>
             <label htmlFor="username">Email</label>
             <input 
@@ -104,7 +103,6 @@ function Login(props: LoginProps) {
             />
             <button type="submit">Log in</button>
         </form>
-    </>
   )
 }
 

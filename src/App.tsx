@@ -90,9 +90,9 @@ function App() {
       {buttonChoice === '' && isLoggedIn === false ? (
         <>
           <h1>HikeSense</h1>
-          <button onClick={() => setButtonChoice("logIn")}>Log in</button>
+          <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
           <p>or</p>
-          <button onClick={() => setButtonChoice("createAccount")}>Create Account</button>
+          <button className="createAccountBtn" onClick={() => setButtonChoice("createAccount")}>Create Account</button>
         </>
       ) : isLoggedIn === false ? (
         <button onClick={() => setButtonChoice("")}>Back</button>
@@ -100,8 +100,6 @@ function App() {
 
       {buttonChoice === 'createAccount' ? (
         <CreateAccount modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
-      ) : buttonChoice === 'logIn' ? (
-        <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
       ) : null}
 
       {isLoggedIn && (
@@ -119,20 +117,20 @@ function App() {
             <div className='weatherDiv'>
               <Weather />
             </div>
+            <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}>
+              <div className='planHikeDiv'>
+                <PlanHike />
+              </div>
+              <div className='latestHikeDiv'>
+                <LatestHike user={user}/>
+              </div>
+            </LoadScript>
             <div className='alertsDiv'>
               <Alerts />
             </div>
             <div className='friendsOnlineDiv'>
               <FriendsOnline />
             </div>
-            <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}>
-              <div className='latestHikeDiv'>
-                <LatestHike user={user}/>
-              </div>
-              <div className='planHikeDiv'>
-                <PlanHike />
-              </div>
-            </LoadScript>
             <div className='aiAssistant'>
               <AiAssistant />
             </div>

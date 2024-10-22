@@ -9,7 +9,7 @@ import {
 import modeUrl  from "../ModeUrl";
 
 const containerStyle = {
-  width: "100%",
+  width: "500px",
   height: "500px",
   borderRadius: "20px",
 };
@@ -20,13 +20,13 @@ const CustomMap = () => {
   const [startLocation, setStartLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [finishLocation, setFinishLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [directions, setDirections] = useState<any>(null);
+  const [route, setRoute] = useState<string>("");
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [hikeName, setHikeName] = useState<string>("");
-  const [route, setRoute] = useState<string>("");
 
   const apiKey = import.meta.env.VITE_MAPS_API_KEY || "";
   const { isLoaded } = useJsApiLoader({
@@ -104,9 +104,14 @@ const CustomMap = () => {
   }, [startLocation, finishLocation]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!window.google || !window.google.maps || !window.google.maps.places) {
+      console.error("Google Maps Places API is not loaded yet.");
+      return;
+    }
+    
     const query = e.target.value;
     setSearchQuery(query);
-
+  
     if (query) {
       const service = new window.google.maps.places.AutocompleteService();
       service.getPlacePredictions({ input: query }, (predictions, status) => {
@@ -221,7 +226,7 @@ const CustomMap = () => {
         zoom={13}
         onClick={handleMapClick}
       >
-        {startLocation && <Marker position={startLocation} />}
+        {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png"/>}
         {finishLocation && <Marker position={finishLocation} />}
         {directions && startLocation && finishLocation && (
           <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
@@ -230,7 +235,7 @@ const CustomMap = () => {
           <InfoWindow position={clickedLocation}>
             <div>
               {!startLocation ? (
-                <button
+                <button style={{marginBottom: "5px"}}
                   onClick={() => {
                     setStartLocation(clickedLocation);
                     setClickedLocation(null);
@@ -239,7 +244,7 @@ const CustomMap = () => {
                   Start Hiking Here
                 </button>
               ) : (
-                <button
+                <button style={{marginBottom: "5px"}}
                   onClick={() => {
                     setFinishLocation(clickedLocation);
                     setClickedLocation(null);
@@ -282,7 +287,7 @@ const CustomMap = () => {
           </div>
         ) : (
           <div>
-            <p>Start here:</p>
+            <p>Start here: <i>Choose start location on map...</i></p>
           </div>
         )}
         {finishLocation ? (
@@ -302,7 +307,7 @@ const CustomMap = () => {
           </div>
         ) : (
           <div>
-            <p>Finish here:</p>
+            <p>Finish here: <i>Choose finish location on map...</i></p>
           </div>
         )}
       </div>
@@ -314,8 +319,8 @@ const CustomMap = () => {
           <p><strong>Distance:</strong> {distance}</p>
           <p><strong>Duration:</strong> {duration}</p>
           <input placeholder="Name hike..." value={hikeName} onChange={(e) => setHikeName(e.target.value)}/>
-          <button onClick={() => setShowPopup(false)}>Cancel</button>
           <button className="saveBtn" onClick={handleSaveBtnClick}>Save</button>
+          <button onClick={() => setShowPopup(false)}>Cancel</button>
         </div>
       )}
     </div>
