@@ -36,6 +36,7 @@ interface LoginProps {
         avgHeartRate: number; 
         avgTemp: number; 
         alerts: Alert[];
+        completed: boolean
     }
     
     interface Alert {

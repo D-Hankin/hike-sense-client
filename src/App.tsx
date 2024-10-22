@@ -10,6 +10,7 @@ import Alerts from './alerts/Alerts';
 import LatestHike from './latestHike/LatestHike';
 import Weather from './weather/Weather';
 import AiAssistant from './aiAssistant/AiAssistant';
+import { LoadScript } from '@react-google-maps/api';
 
 interface User {
   id: string; 
@@ -41,6 +42,7 @@ interface Hike {
   avgHeartRate: number; 
   avgTemp: number; 
   alerts: Alert[];
+  completed: boolean
 }
 
 interface Alert {
@@ -123,12 +125,14 @@ function App() {
             <div className='friendsOnlineDiv'>
               <FriendsOnline />
             </div>
-            <div className='latestHikeDiv'>
-              <LatestHike />
-            </div>
-            <div className='planHikeDiv'>
-              <PlanHike />
-            </div>
+            <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}>
+              <div className='latestHikeDiv'>
+                <LatestHike user={user}/>
+              </div>
+              <div className='planHikeDiv'>
+                <PlanHike />
+              </div>
+            </LoadScript>
             <div className='aiAssistant'>
               <AiAssistant />
             </div>
