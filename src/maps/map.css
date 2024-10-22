@@ -1,7 +1,56 @@
 .map-container {
-    height: 500px;
-    width: 500px;
-    border: 2px solid black;
-    border-radius: 20px;
-    border-radius: 20px;
-  }
+  height: 700px;
+  width: 500px; 
+  border-radius: 20px;
+}
+
+.startStopDiv {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  width: 95%; /* Full width for the div */
+  padding: 10px;
+}
+
+.startDiv, .stopDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%; /* Full width for each row */
+  margin-bottom: 10px; /* Space between rows */
+}
+
+.startDiv p, .stopDiv p {
+  margin: 0; /* Remove default margin */
+}
+
+.startDiv button, .stopDiv button {
+  margin-left: auto; /* Button aligned to the right */
+  width: fit-content;
+  padding: 0 5px; /* Minimal padding for buttons */
+}
+
+.popUpHikeDetails {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  background-color: black;
+  color: white; /* White text for contrast */
+  padding: 5px 10px; /* Smaller padding */
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-size: 12px; /* Smaller font */
+  line-height: 1.2; /* Reduced line spacing */
+  max-width: 200px; /* Restrict popup width */
+}
+
+.saveBtn {
+  margin-top: 3px;
+}
+
+.searchResults {
+  list-style: none;
+  text-align: start;
+}

@@ -9,6 +9,7 @@ import FriendsOnline from './friendsOnline/FriendsOnline';
 import Alerts from './alerts/Alerts';
 import LatestHike from './latestHike/LatestHike';
 import Weather from './weather/Weather';
+import AiAssistant from './aiAssistant/AiAssistant';
 
 interface User {
   id: string; 
@@ -127,6 +128,9 @@ function App() {
             </div>
             <div className='planHikeDiv'>
               <PlanHike />
+            </div>
+            <div className='aiAssistant'>
+              <AiAssistant />
             </div>
           </div>
         </div>

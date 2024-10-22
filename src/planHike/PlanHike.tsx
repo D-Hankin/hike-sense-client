@@ -1,4 +1,5 @@
 import Maps from '../maps/Maps';
+import "./planHike.css";
 
 
 function PlanHike() {
@@ -6,7 +7,7 @@ function PlanHike() {
 
   return (
     <>
-        <div>PlanHike</div>
+        <div className='planHikeInnerDiv'><h3>PlanHike</h3></div>
         <Maps />
     </>
   )
