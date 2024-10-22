@@ -64,7 +64,6 @@ const LatestHike: React.FC<Props> = (props) => {
   useEffect(() => {
     const completedHike = props.user.hikes.find(hike => hike.completed);
     if (completedHike) {
-      console.log('Completed Hike:', completedHike);
       setLatestHike(completedHike);
       setStartLocation({
         lat: completedHike.startLocation.latitude,

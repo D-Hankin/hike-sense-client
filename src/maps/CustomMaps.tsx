@@ -7,6 +7,7 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import modeUrl  from "../ModeUrl";
+import "./map.css"
 
 const containerStyle = {
   width: "500px",
