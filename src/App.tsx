@@ -87,7 +87,11 @@ function App() {
 
   const updateUserState = () => {
     const updatedUser = user;
-    updatedUser.subscriptionStatus = 'premium';
+    if (updatedUser.subscriptionStatus.includes("premium")) {
+      updatedUser.subscriptionStatus = "free";
+    } else {
+      updatedUser.subscriptionStatus = 'premium';
+    }
     setUser(updatedUser);
   }
 
@@ -112,7 +116,7 @@ function App() {
         <div className='mainBody'>
             <Logout logoutCallback={logoutCallback} />
             <div className='userOptionsDiv'>
-              <UserOptions user={user} />
+              <UserOptions user={user} handleUpdateState={updateUserState}/>
             </div>
           <div className='header'>
               <h1>HikeSense</h1>

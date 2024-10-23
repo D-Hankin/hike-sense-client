@@ -4,6 +4,7 @@
     left: 0; /* Align to the left */
     text-align: start;
     background-color: darkgreen;
+    border: 5px solid black;
     padding: 10px;
     border-radius: 10px;
     z-index: 20; /* Ensure it overlays other content */

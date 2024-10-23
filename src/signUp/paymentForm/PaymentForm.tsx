@@ -22,6 +22,7 @@ function PaymentForm(props: Props) {
     const [address, setAddress] = useState<CustomerAddress>({} as CustomerAddress);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("Input field clicked");
         const { name, value } = e.target;
         setAddress({ ...address, [name]: value });
     };
@@ -79,7 +80,7 @@ function PaymentForm(props: Props) {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
             <label>
                 Address Line 1
                 <input

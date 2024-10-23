@@ -6,6 +6,7 @@ import Weather from '../weather/Weather';
 
 interface UserOptionsProps {
   user: User;
+  handleUpdateState: () => void;
 }
 
 interface User {
@@ -53,6 +54,7 @@ interface Alert {
 function UserOptions(props: UserOptionsProps) {
   const [activeComponent, setActiveComponent] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
   const accountDetailsRef = useRef<HTMLDivElement>(null);
@@ -69,7 +71,8 @@ function UserOptions(props: UserOptionsProps) {
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-      accountDetailsRef.current && !accountDetailsRef.current.contains(event.target as Node)
+      accountDetailsRef.current && !accountDetailsRef.current.contains(event.target as Node) &&
+      isModalOpen === false
     ) {
       setIsDropdownOpen(false); // Close dropdown if clicked outside
       setActiveComponent(null); // Close account details if clicked outside
@@ -82,6 +85,10 @@ function UserOptions(props: UserOptionsProps) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleIsModalOpen = (value: boolean) => {
+    setIsModalOpen(value);
+  }
 
   return (
     <div className="userOptionsDropdown" ref={dropdownRef}>
@@ -109,7 +116,7 @@ function UserOptions(props: UserOptionsProps) {
         {activeComponent === 'hikeHistory' && <HikeHistory user={props.user} />}
         {activeComponent === 'accountDetails' && (
           <div ref={accountDetailsRef}>
-            <AccountDetails user={props.user} />
+            <AccountDetails user={props.user} handleUpdateState={props.handleUpdateState} handleIsModalOpen={handleIsModalOpen}/>
           </div>
         )}
         {activeComponent === 'weather' && (
