@@ -49,7 +49,7 @@ function Weather() {
       // Construct the URL for the Visual Crossing Weather API
       const apiKey = import.meta.env.VITE_WEATHER_API_KEY; // Replace with your actual API key
       const currentDateTime = new Date().toISOString(); // Get the current date and time in ISO format
-      const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}/${currentDateTime}?key=${apiKey}&include=current`;
+      const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}/${currentDateTime}?key=${apiKey}&include=current&unitGroup=metric`;
   
       try {
           const response = await fetch(url);

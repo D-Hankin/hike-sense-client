@@ -117,12 +117,13 @@ function App() {
             <div className='weatherDiv'>
               <Weather />
             </div>
-            <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}>
-              <div className='planHikeDiv'>
-                <PlanHike />
-              </div>
+            <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}
+                        libraries={["places"]} >
               <div className='latestHikeDiv'>
                 <LatestHike user={user}/>
+              </div>
+              <div className='planHikeDiv'>
+                <PlanHike />
               </div>
             </LoadScript>
             <div className='alertsDiv'>

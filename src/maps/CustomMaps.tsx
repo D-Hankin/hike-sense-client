@@ -28,6 +28,8 @@ const CustomMap = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [hikeName, setHikeName] = useState<string>("");
+  const [apiLoaded, setApiLoaded] = useState(false);
+  const [queuedQuery, setQueuedQuery] = useState<string | null>(null);
 
   const apiKey = import.meta.env.VITE_MAPS_API_KEY || "";
   const { isLoaded } = useJsApiLoader({
@@ -53,6 +55,20 @@ const CustomMap = () => {
       console.error("Geolocation is not supported by this browser.");
       setMarkerLocation({ lat: 55.385, lng: 13.359 });
     }
+    const interval = setInterval(() => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        setApiLoaded(true);
+        clearInterval(interval);
+
+        // If a query was typed before the API loaded, process it now
+        if (queuedQuery) {
+          handleSearchChange({ target: { value: queuedQuery } } as React.ChangeEvent<HTMLInputElement>);
+          setQueuedQuery(null); // Clear the queued query after processing
+        }
+      }
+    }, 100); // Check every 100ms
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
@@ -105,17 +121,21 @@ const CustomMap = () => {
   }, [startLocation, finishLocation]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!window.google || !window.google.maps || !window.google.maps.places) {
-      console.error("Google Maps Places API is not loaded yet.");
-      return;
-    }
-    
     const query = e.target.value;
     setSearchQuery(query);
-  
+
+    // If the API isn't loaded yet, queue the query and exit
+    if (!apiLoaded) {
+      console.warn("Google Maps API is not loaded yet, queuing the query");
+      setQueuedQuery(query);
+      return;
+    }
+
     if (query) {
-      const service = new window.google.maps.places.AutocompleteService();
-      service.getPlacePredictions({ input: query }, (predictions, status) => {
+      const autocompleteService = new window.google.maps.places.AutocompleteService();
+
+      autocompleteService.getPlacePredictions({ input: query }, (predictions, status) => {
+        console.log("Autocomplete status: ", status);
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
           setSearchResults(predictions || []);
         } else {
