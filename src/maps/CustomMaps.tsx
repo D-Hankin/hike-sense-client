@@ -7,9 +7,10 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import modeUrl  from "../ModeUrl";
+import "./map.css"
 
 const containerStyle = {
-  width: "100%",
+  width: "500px",
   height: "500px",
   borderRadius: "20px",
 };
@@ -20,13 +21,15 @@ const CustomMap = () => {
   const [startLocation, setStartLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [finishLocation, setFinishLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [directions, setDirections] = useState<any>(null);
+  const [route, setRoute] = useState<string>("");
   const [distance, setDistance] = useState<string>("");
   const [duration, setDuration] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [hikeName, setHikeName] = useState<string>("");
-  const [route, setRoute] = useState<string>("");
+  const [apiLoaded, setApiLoaded] = useState(false);
+  const [queuedQuery, setQueuedQuery] = useState<string | null>(null);
 
   const apiKey = import.meta.env.VITE_MAPS_API_KEY || "";
   const { isLoaded } = useJsApiLoader({
@@ -52,6 +55,20 @@ const CustomMap = () => {
       console.error("Geolocation is not supported by this browser.");
       setMarkerLocation({ lat: 55.385, lng: 13.359 });
     }
+    const interval = setInterval(() => {
+      if (window.google && window.google.maps && window.google.maps.places) {
+        setApiLoaded(true);
+        clearInterval(interval);
+
+        // If a query was typed before the API loaded, process it now
+        if (queuedQuery) {
+          handleSearchChange({ target: { value: queuedQuery } } as React.ChangeEvent<HTMLInputElement>);
+          setQueuedQuery(null); // Clear the queued query after processing
+        }
+      }
+    }, 100); // Check every 100ms
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
@@ -107,9 +124,18 @@ const CustomMap = () => {
     const query = e.target.value;
     setSearchQuery(query);
 
+    // If the API isn't loaded yet, queue the query and exit
+    if (!apiLoaded) {
+      console.warn("Google Maps API is not loaded yet, queuing the query");
+      setQueuedQuery(query);
+      return;
+    }
+
     if (query) {
-      const service = new window.google.maps.places.AutocompleteService();
-      service.getPlacePredictions({ input: query }, (predictions, status) => {
+      const autocompleteService = new window.google.maps.places.AutocompleteService();
+
+      autocompleteService.getPlacePredictions({ input: query }, (predictions, status) => {
+        console.log("Autocomplete status: ", status);
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
           setSearchResults(predictions || []);
         } else {
@@ -181,8 +207,9 @@ const CustomMap = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        return response.json();
+        return response.text();
       }).then(data => {
+        alert(data)
         console.log('Hike saved successfully:', data);
       }).catch(error => {
         console.error('There was a problem with the fetch operation:', error);
@@ -220,7 +247,7 @@ const CustomMap = () => {
         zoom={13}
         onClick={handleMapClick}
       >
-        {startLocation && <Marker position={startLocation} />}
+        {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png"/>}
         {finishLocation && <Marker position={finishLocation} />}
         {directions && startLocation && finishLocation && (
           <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
@@ -229,7 +256,7 @@ const CustomMap = () => {
           <InfoWindow position={clickedLocation}>
             <div>
               {!startLocation ? (
-                <button
+                <button style={{marginBottom: "5px"}}
                   onClick={() => {
                     setStartLocation(clickedLocation);
                     setClickedLocation(null);
@@ -238,7 +265,7 @@ const CustomMap = () => {
                   Start Hiking Here
                 </button>
               ) : (
-                <button
+                <button style={{marginBottom: "5px"}}
                   onClick={() => {
                     setFinishLocation(clickedLocation);
                     setClickedLocation(null);
@@ -281,7 +308,7 @@ const CustomMap = () => {
           </div>
         ) : (
           <div>
-            <p>Start here:</p>
+            <p>Start here: <i>Choose start location on map...</i></p>
           </div>
         )}
         {finishLocation ? (
@@ -301,7 +328,7 @@ const CustomMap = () => {
           </div>
         ) : (
           <div>
-            <p>Finish here:</p>
+            <p>Finish here: <i>Choose finish location on map...</i></p>
           </div>
         )}
       </div>
@@ -313,8 +340,8 @@ const CustomMap = () => {
           <p><strong>Distance:</strong> {distance}</p>
           <p><strong>Duration:</strong> {duration}</p>
           <input placeholder="Name hike..." value={hikeName} onChange={(e) => setHikeName(e.target.value)}/>
-          <button onClick={() => setShowPopup(false)}>Cancel</button>
           <button className="saveBtn" onClick={handleSaveBtnClick}>Save</button>
+          <button onClick={() => setShowPopup(false)}>Cancel</button>
         </div>
       )}
     </div>

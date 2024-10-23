@@ -8,8 +8,9 @@ import UserOptions from './userOptions/UserOptions';
 import FriendsOnline from './friendsOnline/FriendsOnline';
 import Alerts from './alerts/Alerts';
 import LatestHike from './latestHike/LatestHike';
-import Weather from './weather/Weather';
 import AiAssistant from './aiAssistant/AiAssistant';
+import { LoadScript } from '@react-google-maps/api';
+import SignUp from './signUp/SignUp';
 
 interface User {
   id: string; 
@@ -41,6 +42,7 @@ interface Hike {
   avgHeartRate: number; 
   avgTemp: number; 
   alerts: Alert[];
+  completed: boolean
 }
 
 interface Alert {
@@ -83,14 +85,24 @@ function App() {
     setUser(user);
   }
 
+  const updateUserState = () => {
+    const updatedUser = user;
+    if (updatedUser.subscriptionStatus.includes("premium")) {
+      updatedUser.subscriptionStatus = "free";
+    } else {
+      updatedUser.subscriptionStatus = 'premium';
+    }
+    setUser(updatedUser);
+  }
+
   return (
     <>
       {buttonChoice === '' && isLoggedIn === false ? (
         <>
           <h1>HikeSense</h1>
-          <button onClick={() => setButtonChoice("logIn")}>Log in</button>
+          <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
           <p>or</p>
-          <button onClick={() => setButtonChoice("createAccount")}>Create Account</button>
+          <button className="createAccountBtn" onClick={() => setButtonChoice("createAccount")}>Create Account</button>
         </>
       ) : isLoggedIn === false ? (
         <button onClick={() => setButtonChoice("")}>Back</button>
@@ -98,39 +110,42 @@ function App() {
 
       {buttonChoice === 'createAccount' ? (
         <CreateAccount modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
-      ) : buttonChoice === 'logIn' ? (
-        <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
       ) : null}
 
       {isLoggedIn && (
         <div className='mainBody'>
             <Logout logoutCallback={logoutCallback} />
             <div className='userOptionsDiv'>
-              <UserOptions user={user} />
+              <UserOptions user={user} handleUpdateState={updateUserState}/>
             </div>
           <div className='header'>
               <h1>HikeSense</h1>
               <p className='welcomeMessage'>Welcome {user.firstName}!</p>
           </div>
-
           <div className='gridContainer'>
-            <div className='weatherDiv'>
-              <Weather />
+            <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}
+                        libraries={["places"]} >
+              <div className='latestHikeDiv'>
+                <LatestHike user={user}/>
+              </div>
+              <div className='planHikeDiv'>
+                <PlanHike />
+              </div>
+            </LoadScript>
+            { user.subscriptionStatus.includes('premium') ? 
+            <div className='aiAssistant'>
+              <AiAssistant />
             </div>
+            :
+            <div className='signUpForPremium'>
+                <SignUp updateUserState={updateUserState} username={user.username}/>
+            </div>
+            } 
             <div className='alertsDiv'>
               <Alerts />
             </div>
             <div className='friendsOnlineDiv'>
               <FriendsOnline />
-            </div>
-            <div className='latestHikeDiv'>
-              <LatestHike />
-            </div>
-            <div className='planHikeDiv'>
-              <PlanHike />
-            </div>
-            <div className='aiAssistant'>
-              <AiAssistant />
             </div>
           </div>
         </div>
