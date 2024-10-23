@@ -1,0 +1,13 @@
+.weather-container {
+    position: absolute; /* Use absolute positioning */
+    top: 50px; /* Adjust to position where needed */
+    left: 0; /* Align to the left */
+    text-align: start;
+    background-color: darkgreen;
+    padding: 10px;
+    border-radius: 10px;
+    z-index: 20; /* Ensure it overlays other content */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+    width: 280px;
+    border: 1px solid black;
+  }

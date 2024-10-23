@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { FaSun, FaCloud, FaCloudRain, FaSnowflake, FaWind, FaCloudSun} from "react-icons/fa"; // Example for icons
+import "./weather.css";
+import "../App.css";
 
 interface WeatherParams {
   latitude: number;
@@ -6,11 +9,45 @@ interface WeatherParams {
   hourly: string;
 }
 
+interface WeatherConditions {
+  temp: number;
+  feelsLike: number;
+  conditions: string;
+  windSpeed: number;
+  windDirection: number;
+  precipProb: number;
+  sunrise: string;
+  sunset: string;
+}
+
 function Weather() {
   const [weatherParams, setWeatherParams] = useState<WeatherParams | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [weatherData, setWeatherData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<WeatherConditions>({} as WeatherConditions);
   const [error, setError] = useState<string | null>(null);
+  const [location, setLocation] = useState<string | null>(null);
+
+  // Function to map conditions to icons
+  const getWeatherIcon = (conditions: string) => {
+    switch (conditions?.toLowerCase()) {
+      case "clear":
+
+      case "sunny":
+        return <FaSun />;
+      case "cloudy":
+        return <FaCloud />;
+      case "rain":
+        return <FaCloudRain />;
+      case "drizzle":
+        return <FaCloudRain />;
+      case "snow":
+        return <FaSnowflake />;
+      case "partially cloudy":
+        return <FaCloudSun />;
+      default:
+        return <FaWind />;
+    }
+  };
 
   useEffect(() => {
     const getLocation = () => {
@@ -58,12 +95,19 @@ function Weather() {
               throw new Error(`Network response was not ok: ${JSON.stringify(errorDetails)}`);
           }
           const data = await response.json();
+          console.log(data.resolvedAddress);
+          setLocation(data.resolvedAddress);
   
           // Extract relevant current weather information
           const currentWeather = {
-              temperature: data.currentConditions.temp, // Temperature
+              temp: data.currentConditions.temp, // Temperature
               conditions: data.currentConditions.conditions, // Weather conditions (e.g., sunny, cloudy)
-              windSpeed: data.currentConditions.windspeed, // Wind speed
+              windSpeed: data.currentConditions.windspeed,
+              precipProb: data.currentConditions.precipprob,
+              sunrise: data.currentConditions.sunrise,
+              sunset: data.currentConditions.sunset,
+              feelsLike: data.currentConditions.feelslike,
+              windDirection: data.currentConditions.winddir,
           };
   
           console.log("data: ", data); // Log the current weather data
@@ -81,18 +125,43 @@ function Weather() {
   
   }, [weatherParams]);
 
+  const getWindDirection = (degrees: number) => {
+    const directions = [
+      "North",     // 0 degrees
+      "North-East", // 45 degrees
+      "East",      // 90 degrees
+      "South-East", // 135 degrees
+      "South",     // 180 degrees
+      "South-West", // 225 degrees
+      "West",      // 270 degrees
+      "North-West", // 315 degrees
+      "North"      // 360 degrees (or 0 degrees)
+    ];
+    
+    const index = Math.round(degrees / 45) % 8; // Calculate index for the direction
+    return directions[index];
+  };
+
   return (
     <>
-      <div>
-        <h3>Your Weather</h3>
+      <div className="weather-container">
         {loading && <p>Loading...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {weatherData && weatherData.hourly && (
+        {weatherData && (
           <div>
-            <h4>Current Weather</h4> 
-            <p>Temperature: {weatherData.temperature}°C</p>
-            <p>Conditions: {weatherData.current_weather.weathercode}</p>
-            <p>windSpeed: {weatherData.current_weather.windspeed}</p>
+            <h4>Current Weather</h4>
+            <p>Location: {location} </p>
+            <div style={{ fontSize: "50px", margin: "20px 0" }}>
+              {getWeatherIcon(weatherData.conditions)}
+            </div>
+            <p><strong>Temperature:</strong> {weatherData.temp}°C</p>
+            <p><strong>Conditions:</strong> {weatherData.conditions}</p>
+            <p><strong>Feels Like:</strong> {weatherData.feelsLike}°C</p>
+            <p><strong>Wind Speed:</strong> {weatherData.windSpeed} km/h</p>
+            <p><strong>Wind Direction:</strong> {getWindDirection(weatherData.windDirection)}</p>
+            <p><strong>Precipitation Probability:</strong> {weatherData.precipProb}%</p>
+            <p><strong>Sunrise:</strong> {weatherData.sunrise}</p>
+            <p><strong>Sunset:</strong> {weatherData.sunset}</p>
           </div>
         )}
       </div>

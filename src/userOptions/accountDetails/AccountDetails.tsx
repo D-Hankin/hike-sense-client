@@ -68,7 +68,11 @@ function AccountDetails(props: AccountDetailsProps) {
                     <p className="detailsP">First Name: {props.user.firstName}</p>
                     <p className="detailsP">Last Name: {props.user.lastName}</p>
                     <p className="detailsP">Email: {props.user.username}</p>
-                    <p className="detailsP">Subscription Status: {props.user.subscriptionStatus}</p>
+                    <p className="detailsP">Subscription Status: {props.user.subscriptionStatus.substring(0, 7)}</p>
+                    {props.user.subscriptionStatus.includes("premium") ? 
+                        <p className="detailsP">Subscription Number: {props.user.subscriptionStatus.substring(7)}</p>
+                        :
+                        null}
                     <button className="detailsButton" onClick={handleEditAccountClick}>Edit Account</button>
                     <button className="detailsButton">Update Subscription</button>
                 </div>

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import AccountDetails from './accountDetails/AccountDetails';
-import FriendsActivity from './friendsActivity/FriendsActivity';
 import HikeHistory from './hikeHistory/HikeHistory';
 import './userOptions.css';
+import Weather from '../weather/Weather';
 
 interface UserOptionsProps {
   user: User;
@@ -90,14 +90,17 @@ function UserOptions(props: UserOptionsProps) {
       </h3>
       {isDropdownOpen && (
         <div className="choicesDiv">
-          <button className="choicesBtns" onClick={() => handleComponentChange('hikeHistory')}>
-            Hike History
-          </button>
           <button className="choicesBtns" onClick={() => handleComponentChange('accountDetails')}>
             Account Details
           </button>
+          <button className="choicesBtns" onClick={() => handleComponentChange('hikeHistory')}>
+            Hike History
+          </button>
           <button className="choicesBtns" onClick={() => handleComponentChange('friendsActivity')}>
             Friends Activity
+          </button>
+          <button className="choicesBtns" onClick={() => handleComponentChange('weather')}>
+            Weather
           </button>
         </div>
       )}
@@ -109,7 +112,11 @@ function UserOptions(props: UserOptionsProps) {
             <AccountDetails user={props.user} />
           </div>
         )}
-        {activeComponent === 'friendsActivity' && <FriendsActivity user={props.user} />}
+        {activeComponent === 'weather' && (
+          <div ref={accountDetailsRef}>
+            <Weather />
+          </div>
+        )}
       </div>
     </div>
   );

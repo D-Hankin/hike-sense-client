@@ -8,9 +8,9 @@ import UserOptions from './userOptions/UserOptions';
 import FriendsOnline from './friendsOnline/FriendsOnline';
 import Alerts from './alerts/Alerts';
 import LatestHike from './latestHike/LatestHike';
-import Weather from './weather/Weather';
 import AiAssistant from './aiAssistant/AiAssistant';
 import { LoadScript } from '@react-google-maps/api';
+import SignUp from './signUp/SignUp';
 
 interface User {
   id: string; 
@@ -85,6 +85,12 @@ function App() {
     setUser(user);
   }
 
+  const updateUserState = () => {
+    const updatedUser = user;
+    updatedUser.subscriptionStatus = 'premium';
+    setUser(updatedUser);
+  }
+
   return (
     <>
       {buttonChoice === '' && isLoggedIn === false ? (
@@ -112,11 +118,7 @@ function App() {
               <h1>HikeSense</h1>
               <p className='welcomeMessage'>Welcome {user.firstName}!</p>
           </div>
-
           <div className='gridContainer'>
-            <div className='weatherDiv'>
-              <Weather />
-            </div>
             <LoadScript googleMapsApiKey={import.meta.env.VITE_MAPS_API_KEY}
                         libraries={["places"]} >
               <div className='latestHikeDiv'>
@@ -126,14 +128,20 @@ function App() {
                 <PlanHike />
               </div>
             </LoadScript>
+            { user.subscriptionStatus.includes('premium') ? 
+            <div className='aiAssistant'>
+              <AiAssistant />
+            </div>
+            :
+            <div className='signUpForPremium'>
+                <SignUp updateUserState={updateUserState} username={user.username}/>
+            </div>
+            } 
             <div className='alertsDiv'>
               <Alerts />
             </div>
             <div className='friendsOnlineDiv'>
               <FriendsOnline />
-            </div>
-            <div className='aiAssistant'>
-              <AiAssistant />
             </div>
           </div>
         </div>

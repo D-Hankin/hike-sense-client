@@ -16,7 +16,7 @@
   padding: 20px;
   background-color: black; /* Light background for better contrast */
   border-radius: 30px;
-  margin: auto;
+  
 }
 
 .header {
@@ -41,15 +41,17 @@ h1 {
 }
 
 .gridContainer {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Create a 2x2 grid */
-  gap: 20px; /* Space between grid items */
+  display: flex; /* Use flexbox */
+  flex-wrap: wrap; /* Allow wrapping of items */
+  justify-content: space-between; /* Space items evenly */
+  gap: 20px; /* Space between items */
   width: 100%;
-  max-width: 800px; /* Limit the width for better appearance */
+   /* Limit the width for better appearance */
   margin-top: 20px; /* Space above the grid */
 }
 
-.weatherDiv, .alertsDiv, .friendsOnlineDiv, .latestHikeDiv, .planHikeDiv, .aiAssistant {
+.alertsDiv, .friendsOnlineDiv, .latestHikeDiv, .planHikeDiv, .aiAssistant, .signUpForPremium {
+  flex: 0 1 calc(40% - 50px); /* Each item takes up half the width, minus gap */
   padding: 15px;
   border-radius: 8px; /* Rounded corners */
   background-color: #ffffff; /* White background for each card */
@@ -60,7 +62,11 @@ h1 {
 /* Responsive design for smaller screens */
 @media (max-width: 600px) {
   .gridContainer {
-    grid-template-columns: 1fr; /* Stack items in a single column on small screens */
+    flex-direction: column; /* Stack items in a single column on small screens */
+  }
+
+  .alertsDiv, .friendsOnlineDiv, .latestHikeDiv, .planHikeDiv, .aiAssistant {
+    flex: 1 1 100%; /* Each item takes full width on small screens */
   }
 }
 

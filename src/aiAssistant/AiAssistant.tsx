@@ -1,7 +1,9 @@
 
 function AiAssistant() {
   return (
-    <div>AiAssistant</div>
+    <div>
+      <h3>Ai Assistant</h3>
+    </div>
   )
 }
 
