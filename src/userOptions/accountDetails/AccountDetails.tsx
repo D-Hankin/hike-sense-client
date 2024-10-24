@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from 'react-modal'; // Import Modal component
 import "./accountDetails.css"
 import { Elements } from "@stripe/react-stripe-js";
@@ -75,12 +75,10 @@ function AccountDetails(props: AccountDetailsProps) {
     // Open cancel modal
     const handleCancelSubscriptionClick = () => {
         setIsCancelModalOpen(true);
-        handleConfirmSubscriptionUpdate();
     }
 
     // Open update modal
     const handleUpdateSubscriptionClick = () => {
-        props.handleIsModalOpen(true);
         setIsUpdateModalOpen(true);
     }
 
@@ -88,13 +86,13 @@ function AccountDetails(props: AccountDetailsProps) {
     const closeModal = () => {
         setIsCancelModalOpen(false);
         setIsUpdateModalOpen(false);
-        props.handleIsModalOpen(false);
     }
 
     // Handle subscription update confirmation
     const handleConfirmSubscriptionUpdate = async () => {
-        setIsCancelModalOpen(false);
-        props.handleIsModalOpen(false);
+        console.log("isCancelModalOpen: ", isCancelModalOpen);
+        console.log("isUpdateModalOpen: ", isUpdateModalOpen);
+        closeModal();
         console.log("Subscription updated or canceled.");
         const fetchHttp = modeUrl + "/stripe/cancel";
         const token = "Bearer " + localStorage.getItem("token");
@@ -111,12 +109,21 @@ function AccountDetails(props: AccountDetailsProps) {
             alert("Failed to cancel subscription. Please try again.");
             return;
         }
-
+        
         const message = await response.json();
         alert(message.status);
-        closeModal();
         props.handleUpdateState()
     }
+
+    useEffect(() => {
+        console.log("isUpdateModalOpen: ", isUpdateModalOpen);
+        props.handleIsModalOpen(isUpdateModalOpen);
+    }, [isUpdateModalOpen]);
+
+    useEffect(() => {
+        console.log("isCancelModalOpen: ", isCancelModalOpen);
+        props.handleIsModalOpen(isCancelModalOpen);
+    }, [isCancelModalOpen]);
 
     return (
         <div>

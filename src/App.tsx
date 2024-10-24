@@ -66,7 +66,24 @@ function App() {
     else setModeUrl('https://stingray-app-ewlud.ondigitalocean.app');
     
     if (localStorage.getItem('token')) {
-      setIsLoggedIn(true);
+
+      console.log("token: ", localStorage.getItem('token'));
+
+      const fetchHttp = modeUrl + '/user/get-user';
+      const token = "Bearer " + localStorage.getItem('token');
+
+      fetch(fetchHttp, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      }).then(response => response.json())
+        .then(data => {
+          setUser(data);
+          setIsLoggedIn(true);
+        })
+        .catch(error => console.error('Error:', error));
     }
   }, []);
 
@@ -85,15 +102,19 @@ function App() {
     setUser(user);
   }
 
-  const updateUserState = () => {
-    const updatedUser = user;
-    if (updatedUser.subscriptionStatus.includes("premium")) {
-      updatedUser.subscriptionStatus = "free";
-    } else {
-      updatedUser.subscriptionStatus = 'premium';
+  const updateUserState = async () => {
+      const fetchHttp = modeUrl + '/user/get-user';
+      const token = "Bearer " + localStorage.getItem('token');
+      const response = await fetch(fetchHttp, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        }
+      });
+      const data = await response.json();
+      setUser(data);
     }
-    setUser(updatedUser);
-  }
 
   return (
     <>
@@ -134,7 +155,7 @@ function App() {
             </LoadScript>
             { user.subscriptionStatus.includes('premium') ? 
             <div className='aiAssistant'>
-              <AiAssistant />
+              <AiAssistant userFirstName={user.firstName}/>
             </div>
             :
             <div className='signUpForPremium'>

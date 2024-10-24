@@ -55,9 +55,10 @@ function UserOptions(props: UserOptionsProps) {
   const [activeComponent, setActiveComponent] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  
+
   const dropdownRef = useRef<HTMLDivElement>(null);
   const accountDetailsRef = useRef<HTMLDivElement>(null);
+  const isModalOpenRef = useRef(isModalOpen); // Ref to store latest state of `isModalOpen`
 
   const handleComponentChange = (component: string) => {
     setActiveComponent(component);
@@ -69,15 +70,22 @@ function UserOptions(props: UserOptionsProps) {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-      accountDetailsRef.current && !accountDetailsRef.current.contains(event.target as Node) &&
-      isModalOpen === false
-    ) {
-      setIsDropdownOpen(false); // Close dropdown if clicked outside
-      setActiveComponent(null); // Close account details if clicked outside
+    console.log('isModalOpenRef.current: ', isModalOpenRef.current);
+    if (!isModalOpenRef.current) {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+        accountDetailsRef.current && !accountDetailsRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false); // Close dropdown if clicked outside
+        setActiveComponent(null); // Close account details if clicked outside
+      }
     }
   };
+
+  // Update the ref when isModalOpen changes
+  useEffect(() => {
+    isModalOpenRef.current = isModalOpen;
+  }, [isModalOpen]);
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -87,6 +95,7 @@ function UserOptions(props: UserOptionsProps) {
   }, []);
 
   const handleIsModalOpen = (value: boolean) => {
+    console.log('handleIsModalOpen', value);
     setIsModalOpen(value);
   }
 
@@ -116,7 +125,7 @@ function UserOptions(props: UserOptionsProps) {
         {activeComponent === 'hikeHistory' && <HikeHistory user={props.user} />}
         {activeComponent === 'accountDetails' && (
           <div ref={accountDetailsRef}>
-            <AccountDetails user={props.user} handleUpdateState={props.handleUpdateState} handleIsModalOpen={handleIsModalOpen}/>
+            <AccountDetails user={props.user} handleUpdateState={props.handleUpdateState} handleIsModalOpen={handleIsModalOpen} />
           </div>
         )}
         {activeComponent === 'weather' && (
