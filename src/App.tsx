@@ -1,3 +1,4 @@
+import "./globals.ts"
 import { useEffect, useState } from 'react';
 import './App.css';
 import CreateAccount from './createAccount/CreateAccount';
@@ -11,49 +12,7 @@ import LatestHike from './latestHike/LatestHike';
 import AiAssistant from './aiAssistant/AiAssistant';
 import { LoadScript } from '@react-google-maps/api';
 import SignUp from './signUp/SignUp';
-
-interface User {
-  id: string; 
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  hikes: Hike[];
-  friends: string[]; 
-  subscriptionStatus: string;
-}
-
-interface Hike {
-  name: string;
-  startLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  finishLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  startTime: string; 
-  finishTime: string; 
-  distance: number; 
-  duration: number; 
-  route: string; 
-  isFavorite: boolean;
-  avgHeartRate: number; 
-  avgTemp: number; 
-  alerts: Alert[];
-  completed: boolean
-}
-
-interface Alert {
-  alertType: string;
-  information: string;
-  time: string; 
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-}
+import { User } from './User';
 
 function App() {
   const [modeUrl, setModeUrl] = useState<string>('');
@@ -162,11 +121,11 @@ function App() {
                 <SignUp updateUserState={updateUserState} username={user.username}/>
             </div>
             } 
+            <div className='friendsOnlineDiv'>
+              <FriendsOnline user={user} />
+            </div>
             <div className='alertsDiv'>
               <Alerts />
-            </div>
-            <div className='friendsOnlineDiv'>
-              <FriendsOnline />
             </div>
           </div>
         </div>

@@ -30,4 +30,8 @@
   .componentContainer {
     margin-top: 10px; /* Optional: to create space between the dropdown and the components */
   }
+
+  .userOptionsTitle {
+    cursor: pointer;
+  }
   
