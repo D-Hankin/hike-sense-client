@@ -3,52 +3,11 @@ import AccountDetails from './accountDetails/AccountDetails';
 import HikeHistory from './hikeHistory/HikeHistory';
 import './userOptions.css';
 import Weather from '../weather/Weather';
+import { User } from '../User';
 
 interface UserOptionsProps {
   user: User;
   handleUpdateState: () => void;
-}
-
-interface User {
-  id: string;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  hikes: Hike[];
-  friends: string[];
-  subscriptionStatus: string;
-}
-
-interface Hike {
-  name: string;
-  startLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  finishLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  startTime: string;
-  finishTime: string;
-  distance: number;
-  duration: number;
-  route: string;
-  isFavorite: boolean;
-  avgHeartRate: number;
-  avgTemp: number;
-  alerts: Alert[];
-}
-
-interface Alert {
-  alertType: string;
-  information: string;
-  time: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
 }
 
 function UserOptions(props: UserOptionsProps) {

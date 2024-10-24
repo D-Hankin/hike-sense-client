@@ -1,49 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DirectionsRenderer, GoogleMap, Marker } from "@react-google-maps/api";
 import "./latestHike.css"
-
-interface User {
-  id: string;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  hikes: Hike[];
-  friends: string[];
-  subscriptionStatus: string;
-}
-
-interface Hike {
-  name: string;
-  startLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  finishLocation: {
-    latitude: number;
-    longitude: number;
-  };
-  startTime: string;
-  finishTime: string;
-  distance: number;
-  duration: number;
-  route: string;
-  isFavorite: boolean;
-  avgHeartRate: number;
-  avgTemp: number;
-  alerts: Alert[];
-  completed: boolean;
-}
-
-interface Alert {
-  alertType: string;
-  information: string;
-  time: string;
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-}
+import { Hike, User } from "../User";
 
 interface Props {
   user: User;

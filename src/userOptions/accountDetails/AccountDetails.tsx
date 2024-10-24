@@ -5,53 +5,12 @@ import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../../signUp/paymentForm/PaymentForm";
 import { loadStripe } from "@stripe/stripe-js";
 import modeUrl from "../../ModeUrl";
+import { User } from "../../User";
 
 interface AccountDetailsProps {
     user: User;
     handleUpdateState: () => void;
     handleIsModalOpen: (value: boolean) => void;
-}
-
-interface User {
-    id: string; 
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    hikes: Hike[];
-    friends: string[]; 
-    subscriptionStatus: string;
-}
-
-interface Hike {
-    name: string;
-    startLocation: {
-        latitude: number;
-        longitude: number;
-    };
-    finishLocation: {
-        latitude: number;
-        longitude: number;
-    };
-    startTime: string; 
-    finishTime: string; 
-    distance: number; 
-    duration: number; 
-    route: string; 
-    isFavorite: boolean;
-    avgHeartRate: number; 
-    avgTemp: number; 
-    alerts: Alert[];
-}
-
-interface Alert {
-    alertType: string;
-    information: string;
-    time: string; 
-    location: {
-        latitude: number;
-        longitude: number;
-    };
 }
 
 Modal.setAppElement('#root'); // Set app element for modal accessibility
