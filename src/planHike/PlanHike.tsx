@@ -1,4 +1,5 @@
-import Maps from '../maps/Maps';
+import CustomMaps from '../maps/CustomMaps';
+import "./planHike.css";
 
 
 function PlanHike() {
@@ -6,8 +7,8 @@ function PlanHike() {
 
   return (
     <>
-        <div>PlanHike</div>
-        <Maps />
+        <div className='planHikeInnerDiv'><h3>PlanHike</h3></div>
+        <CustomMaps />
     </>
   )
 }
