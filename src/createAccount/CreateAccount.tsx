@@ -41,7 +41,6 @@ function CreateAccount(props: TestPostProps) {
             localStorage.setItem('token', data.token);
             props.handleLoginSuccess();
             props.handleUserObject(data.user);
-            console.log('Message:', data);
         })
         .catch((error) => {
             console.error('Error:', error.message);

@@ -26,8 +26,6 @@ function App() {
     
     if (localStorage.getItem('token')) {
 
-      console.log("token: ", localStorage.getItem('token'));
-
       const fetchHttp = modeUrl + '/user/get-user';
       const token = "Bearer " + localStorage.getItem('token');
 

@@ -22,7 +22,6 @@ function PaymentForm(props: Props) {
     const [address, setAddress] = useState<CustomerAddress>({} as CustomerAddress);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("Input field clicked");
         const { name, value } = e.target;
         setAddress({ ...address, [name]: value });
     };
@@ -72,7 +71,6 @@ function PaymentForm(props: Props) {
         if (error) {
             console.error('Payment confirmation error:', error);
         } else {
-            console.log('Payment successful!');
             alert('Payment successful!');
             props.updateUserState();
             props.closeModal()

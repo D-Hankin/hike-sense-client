@@ -6,6 +6,7 @@ export interface User {
     lastName: string;
     hikes: Hike[];
     friends: Friend[]; 
+    pendingFriendRequests: string[];
     subscriptionStatus: string;
 }
 
