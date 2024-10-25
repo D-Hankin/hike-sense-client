@@ -5,6 +5,7 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import modeUrl from '../ModeUrl';
 import { User } from "../User.ts";
+import "./friendsOnline.css"
 
 interface FriendsOnlineProps {
   user: User;
@@ -195,10 +196,10 @@ function FriendsOnline(props: FriendsOnlineProps) {
       {friendsOnline.length === 0 ? (
         <h3>No friends currently online</h3>
       ) : (
-        <ul>
+        <ul className="onlineFriendsList">
           {friendsOnline.map((friendUsername) => (
-            <li key={friendUsername} onClick={() => handleFriendClick(friendUsername)}>
-              {friendUsername} is online <div style={{backgroundColor: "green", width: "10px", height: "10px"}}></div>
+            <li key={friendUsername} onClick={() => handleFriendClick(friendUsername)} style={{backgroundColor: "grey", borderRadius: "5px", width:"fit-content", padding:"5px"}}>
+              {friendUsername} is online, click here to start a chat!
             </li>
           ))}
         </ul>

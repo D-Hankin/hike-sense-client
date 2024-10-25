@@ -1,23 +1,24 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import modeUrl from '../../ModeUrl';
+import './friendChat.css';
 
 interface FriendsChatProps {
   friendSelected: string;
-  username: string; // Your current user's username
+  username: string;
 }
 
 const FriendsChat: React.FC<FriendsChatProps> = (props) => {
   const [messages, setMessages] = useState<string[]>([]);
   const [inputMessage, setInputMessage] = useState<string>('');
   const stompClientRef = useRef<Client | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const token = 'Bearer ' + localStorage.getItem('token');
     if (!props.friendSelected) return;
-    const socketUrl = modeUrl + `/ws?token=${token}`; // Replace with your WebSocket URL
+    const socketUrl = modeUrl + `/ws?token=${token}`;
     const socket = new SockJS(socketUrl);
     const stompClient = new Client({
       webSocketFactory: () => socket as WebSocket,
@@ -25,11 +26,10 @@ const FriendsChat: React.FC<FriendsChatProps> = (props) => {
       onConnect: () => {
         console.log('Connected to chat websocket');
         
-        // Subscribe to receive messages for the selected friend
         stompClient.subscribe(`/topic/chat/${props.friendSelected}`, (message: IMessage) => {
           const chatMessage = JSON.parse(message.body);
           if (chatMessage && chatMessage.content) {
-            setMessages((prevMessages) => [...prevMessages, chatMessage.content]);
+            setMessages((prevMessages) => [...prevMessages, props.friendSelected + ": " + chatMessage.content]);
           } else {
             console.error("Received malformed message:", message.body);
           }
@@ -45,6 +45,12 @@ const FriendsChat: React.FC<FriendsChatProps> = (props) => {
       stompClient.deactivate();
     };
   }, [props.friendSelected]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (stompClientRef.current && inputMessage.trim()) {
@@ -67,8 +73,14 @@ const FriendsChat: React.FC<FriendsChatProps> = (props) => {
       <h3>Chat with {props.friendSelected}</h3>
       <div className="messages">
         {messages.map((message, index) => (
-          <div key={index} className="message">{message}</div>
+          <div 
+            key={index} 
+            className={`message ${message.startsWith("You:") ? "user-message" : "friend-message"}`}
+          >
+            {message}
+          </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
       <div className="input-area">
         <input 
