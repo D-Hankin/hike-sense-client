@@ -29,7 +29,6 @@ function UserOptions(props: UserOptionsProps) {
   };
 
   const handleClickOutside = (event: MouseEvent) => {
-    console.log('isModalOpenRef.current: ', isModalOpenRef.current);
     if (!isModalOpenRef.current) {
       if (
         dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
@@ -54,7 +53,6 @@ function UserOptions(props: UserOptionsProps) {
   }, []);
 
   const handleIsModalOpen = (value: boolean) => {
-    console.log('handleIsModalOpen', value);
     setIsModalOpen(value);
   }
 

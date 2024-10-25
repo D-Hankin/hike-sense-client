@@ -60,7 +60,6 @@ function Weather() {
               longitude: longitude,
               hourly: "temperature_2m", // Added necessary fields
             });
-            console.log(latitude, ",", longitude);
           },
           (error) => {
             console.error("Error getting location: ", error);
@@ -95,7 +94,6 @@ function Weather() {
               throw new Error(`Network response was not ok: ${JSON.stringify(errorDetails)}`);
           }
           const data = await response.json();
-          console.log(data.resolvedAddress);
           setLocation(data.resolvedAddress);
   
           // Extract relevant current weather information
@@ -110,7 +108,6 @@ function Weather() {
               windDirection: data.currentConditions.winddir,
           };
   
-          console.log("data: ", data); // Log the current weather data
           setWeatherData(currentWeather); // Update state with current weather data
       } catch (error) {
           console.error('Error fetching weather data: ', error);

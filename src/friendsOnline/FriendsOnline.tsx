@@ -14,12 +14,41 @@ function FriendsOnline(props: FriendsOnlineProps) {
   const [friendSelected, setFriendSelected] = useState<string>('');
   const [friendsOnline, setFriendsOnline] = useState<string[]>([]);
   const [addFriend, setAddAFriend] = useState<string>('');
-  const [friendRequests, setFriendRequests] = useState<string[]>([]);
-  const stompClientRef = useRef<Client | null>(null); // Create a ref for stompClient
+  const [friendRequests, setFriendRequests] = useState<{ id: string; requester: string }[]>([]);
+  const stompClientRef = useRef<Client | null>(null);
+
+  useEffect(() => {
+    // Fetch initial online friends from the database
+    const fetchOnlineFriends = async () => {
+      try {
+        const token = "Bearer " + localStorage.getItem('token');
+        const response = await fetch(`${modeUrl}/user/users-online`, {
+          method: 'GET',
+          headers: {
+            Authorization: token,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch online friends');
+        }
+
+        const onlineFriends = await response.json();
+
+        // Extract usernames from the list of objects
+        const usernames = onlineFriends.map((friend: { username: string }) => friend.username);
+        setFriendsOnline(usernames);
+      } catch (error) {
+        console.error('Error fetching online friends:', error);
+      }
+    };
+
+    fetchOnlineFriends();
+  }, []);
 
   useEffect(() => {
     const token = "Bearer " + localStorage.getItem('token');
-    console.log('token: ', token);
     const websocketUrl = modeUrl + `/ws?token=${token}`; 
     const socket = new SockJS(websocketUrl);
     const stompClient = new Client({
@@ -29,17 +58,39 @@ function FriendsOnline(props: FriendsOnlineProps) {
         console.log('Connected to websocket');
 
         // Subscribe to online status of friends
-        props.user.friends.forEach((friend) => {  
+        props.user.friends.forEach((friend) => {
           console.log('Subscribing to friend:', friend.usernameFriend);
-          stompClient.subscribe('/topic/online-status/' + friend.usernameFriend, () => {
-            setFriendsOnline((prevFriendsOnline) => [...prevFriendsOnline, friend.usernameFriend]);
+          stompClient.subscribe('/topic/online-status/' + friend.usernameFriend, (message) => {
+            console.log('Received online status update:', message.body);
+            if (message.body.includes('is online')) {
+              setFriendsOnline((prevFriendsOnline) => {
+                if (!prevFriendsOnline.includes(friend.usernameFriend)) {
+                  return [...prevFriendsOnline, friend.usernameFriend];
+                }
+                return prevFriendsOnline;
+              });
+            } else if (message.body.includes('is offline')) {
+              setFriendsOnline((prevFriendsOnline) => 
+                prevFriendsOnline.filter(onlineFriend => onlineFriend !== friend.usernameFriend)
+              );
+            }
           });
         });
 
         // Subscribe to incoming friend requests
         stompClient.subscribe('/topic/friend-requests/' + props.user.username, (message) => {
-          const request = JSON.parse(message.body);
-          setFriendRequests((prevRequests) => [...prevRequests, request.sender]);
+          console.log('Incoming message:', message.body);
+          try {
+            const request = message.body; // Assuming the message is a JSON string
+            setFriendRequests((prevRequests) => {
+              if (!prevRequests.some(r => r.requester === request)) {
+                return [...prevRequests, { id: new Date().getTime().toString(), requester: request }];
+              }
+              return prevRequests;
+            });
+          } catch (error) {
+            console.error('Failed to parse message:', error);
+          }
         });
       },
       onStompError: (error: any) => {
@@ -55,50 +106,55 @@ function FriendsOnline(props: FriendsOnlineProps) {
     }
   }, [props.user]);
 
-  const handleAddFriendBtnClick = async () => {
-    if (addFriend.trim() === '') return; // Prevent empty requests
-    const token = "Bearer " + localStorage.getItem('token');
+  useEffect(() => {
+    const mappedFriendRequests = props.user.pendingFriendRequests.map((requester, index) => ({
+      id: index.toString(),
+      requester: requester + " wants to be friends",
+    }));
+    setFriendRequests(mappedFriendRequests);
+  }, [props.user.pendingFriendRequests]);
 
-    // Use the stompClient stored in the ref
+  const handleAddFriendBtnClick = async () => {
+    if (addFriend.trim() === '') return;
+    console.log('Sending friend request to:', addFriend);
     if (stompClientRef.current) {
-      const request = { sender: props.user.username, receiver: addFriend };
+      console.log('STOMP client is connected');
+      const request = { sender: props.user.username, receiver: addFriend, status: 'PENDING' };
+      console.log('Sending friend request:', request);
       stompClientRef.current.publish({
-        destination: '/app/friend-requests', // Adjust this based on your server's endpoint
+        destination: '/app/friend-requests',
         body: JSON.stringify(request),
-        headers: { Authorization: token }
       });
-      setAddAFriend(''); // Clear input after sending
+      setAddAFriend('');
     } else {
       console.error('STOMP client is not connected');
     }
   };
 
   const handleFriendClick = (friend: string) => {
-    setFriendSelected(friend); // Set the selected friend for chat
+    setFriendSelected(friend);
   };
 
-  const handleDeclineBtnClick = (request: string) => {
+  const handleResponseBtnClick = (requestId: string, decision: string) => {
     if (stompClientRef.current) {
-      const response = { 
-        sender: props.user.username, 
-        receiver: request, 
-        status: 'declined' };
-      stompClientRef.current.publish({
-        destination: '/app/friend-requests/response', // Adjust this based on your server's endpoint
-        body: JSON.stringify(response),
-      });
-      setFriendRequests((prevRequests) => prevRequests.filter(r => r !== request)); // Remove from friend requests
-    }
-  };
+      const request = friendRequests.find(req => req.id === requestId);
+      if (request) {
+        const receiverUsername = request.requester.split(" ")[0];
+        if (decision === 'ACCEPTED') {
+          setFriendsOnline((prevFriendsOnline) => [...prevFriendsOnline, receiverUsername]);
+        }
+        const response = { 
+          sender: props.user.username, 
+          receiver: receiverUsername, 
+          status: decision 
+        };
+        stompClientRef.current.publish({
+          destination: '/app/friend-requests/response',
+          body: JSON.stringify(response),
+        });
 
-  const handleAcceptBtnClick = (request: string) => {
-    if (stompClientRef.current) {
-      const response = { sender: props.user.username, receiver: request, status: 'accepted' };
-      stompClientRef.current.publish({
-        destination: '/app/friend-requests/response', // Adjust this based on your server's endpoint
-        body: JSON.stringify(response),
-      });
-      setFriendRequests((prevRequests) => prevRequests.filter(r => r !== request)); // Remove from friend requests
+        setFriendRequests((prevRequests) => prevRequests.filter(req => req.id !== requestId));
+      }
     }
   };
 
@@ -121,10 +177,15 @@ function FriendsOnline(props: FriendsOnlineProps) {
             <li>No new friend requests</li>
           ) : (
             friendRequests.map((request) => (
-              <li key={request}>
-                {request} wants to be your friend
-                <button onClick={() => handleAcceptBtnClick(request)}>Accept</button>
-                <button onClick={() => handleDeclineBtnClick(request)}>Decline</button>
+              <li key={request.id}>
+                {request.requester}
+                {!request.requester.includes('wants') ? null 
+                :
+                <>
+                  <button onClick={() => handleResponseBtnClick(request.id, 'ACCEPTED')}>Accept</button>
+                  <button onClick={() => handleResponseBtnClick(request.id, 'DECLINED')}>Decline</button>
+                </>
+                }
               </li>
             ))
           )}
@@ -137,13 +198,13 @@ function FriendsOnline(props: FriendsOnlineProps) {
         <ul>
           {friendsOnline.map((friendUsername) => (
             <li key={friendUsername} onClick={() => handleFriendClick(friendUsername)}>
-              {friendUsername} is online
+              {friendUsername} is online <div style={{backgroundColor: "green", width: "10px", height: "10px"}}></div>
             </li>
           ))}
         </ul>
       )}
       {friendSelected !== '' && (
-        <FriendsChat friendSelected={friendSelected} />
+        <FriendsChat username={props.user.firstName} friendSelected={friendSelected} />
       )}
     </div>
   );

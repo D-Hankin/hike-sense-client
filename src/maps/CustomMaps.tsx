@@ -73,10 +73,8 @@ const CustomMap = () => {
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     const latLng = event.latLng;
-    console.log("Map clicked at: ", latLng);
     if (latLng) {
       const newLocation = { lat: latLng.lat(), lng: latLng.lng() };
-      console.log("Setting clicked location to: ", newLocation);
       setClickedLocation(newLocation);
     } else {
       alert("Please select a specific location");
@@ -135,7 +133,6 @@ const CustomMap = () => {
       const autocompleteService = new window.google.maps.places.AutocompleteService();
 
       autocompleteService.getPlacePredictions({ input: query }, (predictions, status) => {
-        console.log("Autocomplete status: ", status);
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
           setSearchResults(predictions || []);
         } else {
@@ -177,10 +174,8 @@ const CustomMap = () => {
   if (!isLoaded) return <div>Loading...</div>;
 
   const handleSaveBtnClick = () => {
-      console.log(startLocation, ", ", finishLocation)
     if (startLocation && finishLocation) {
       const fetchHttp = modeUrl + "/hike/new-hike";
-      console.log(fetchHttp);
       const token = "Bearer " + localStorage.getItem("token");
       fetch(fetchHttp, {
         method: "POST",
@@ -210,7 +205,6 @@ const CustomMap = () => {
         return response.text();
       }).then(data => {
         alert(data)
-        console.log('Hike saved successfully:', data);
       }).catch(error => {
         console.error('There was a problem with the fetch operation:', error);
       })

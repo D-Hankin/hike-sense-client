@@ -49,10 +49,7 @@ function AccountDetails(props: AccountDetailsProps) {
 
     // Handle subscription update confirmation
     const handleConfirmSubscriptionUpdate = async () => {
-        console.log("isCancelModalOpen: ", isCancelModalOpen);
-        console.log("isUpdateModalOpen: ", isUpdateModalOpen);
         closeModal();
-        console.log("Subscription updated or canceled.");
         const fetchHttp = modeUrl + "/stripe/cancel";
         const token = "Bearer " + localStorage.getItem("token");
         const response = await fetch(fetchHttp, {
@@ -75,12 +72,10 @@ function AccountDetails(props: AccountDetailsProps) {
     }
 
     useEffect(() => {
-        console.log("isUpdateModalOpen: ", isUpdateModalOpen);
         props.handleIsModalOpen(isUpdateModalOpen);
     }, [isUpdateModalOpen]);
 
     useEffect(() => {
-        console.log("isCancelModalOpen: ", isCancelModalOpen);
         props.handleIsModalOpen(isCancelModalOpen);
     }, [isCancelModalOpen]);
 

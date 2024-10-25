@@ -55,7 +55,6 @@ function HikeBuddyChatBox(props: ChatBoxProps) {
             }
 
             const data = await response.json();
-            console.log('AI response:', data);
 
             if (data.choices[0].message) {
                 const newMessage: Message = { name: 'Hike Buddy', prompt: data.choices[0].message.content};
