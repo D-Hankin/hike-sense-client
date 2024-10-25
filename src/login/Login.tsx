@@ -1,63 +1,48 @@
-import React, { FormEvent } from 'react'
-import "./login.css"
+import React, { FormEvent, useRef } from 'react';
+import "./login.css";
+import modeUrl from '../ModeUrl';
+import { User } from '../User';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 interface LoginProps {
     modeUrl: string;
     handleLoginSuccess: () => void;
     handleUserObject: (user: User) => void;
-    }
-
-    interface User {
-        id: string; 
-        username: string;
-        password: string;
-        firstName: string;
-        lastName: string;
-        hikes: Hike[];
-        friends: string[]; 
-        subscriptionStatus: string;
-    }
-    
-    interface Hike {
-        name: string;
-        startLocation: {
-            latitude: number;
-            longitude: number;
-        };
-        finishLocation: {
-            latitude: number;
-            longitude: number;
-        };
-        startTime: string; 
-        finishTime: string; 
-        distance: number; 
-        duration: number; 
-        route: string; 
-        isFavorite: boolean;
-        avgHeartRate: number; 
-        avgTemp: number; 
-        alerts: Alert[];
-        completed: boolean
-    }
-    
-    interface Alert {
-        alertType: string;
-        information: string;
-        time: string; 
-        location: {
-            latitude: number;
-            longitude: number;
-        };
-    }
+}
 
 function Login(props: LoginProps) {
-
     const [username, setUsername] = React.useState<string>('');
     const [password, setPassword] = React.useState<string>('');
+    const stompClientRef = useRef<Client | null>(null);
+
+    // WebSocket setup and publish function
+    const publishLoginStatus = () => {
+        const token = "Bearer " + localStorage.getItem('token');
+        const websocketUrl = modeUrl + `/ws?token=${token}`; 
+        const socket = new SockJS(websocketUrl);
+
+        const stompClient = new Client({
+            webSocketFactory: () => socket as WebSocket,
+            reconnectDelay: 5000,
+            onConnect: () => {
+                console.log('Connected to websocket for login status');
+                stompClient.publish({
+                    destination: `/app/friend-login`, 
+                });
+            },
+            onStompError: (error: any) => {
+                console.error('Error with STOMP connection:', error);
+            }
+        });
+
+        stompClient.activate();
+        stompClientRef.current = stompClient;
+    };
 
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault();
-        fetch(props.modeUrl + '/user/login', {
+        fetch(modeUrl + '/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,19 +54,23 @@ function Login(props: LoginProps) {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Message:', data);
-            localStorage.setItem('token', data.token);
-            props.handleLoginSuccess();
-            props.handleUserObject(data.user);
-            
+            if (!data.token.includes("Bad")) {
+                localStorage.setItem('token', data.token);
+                props.handleLoginSuccess();
+                props.handleUserObject(data.user);
+                
+                // Publish login status to notify friends
+                publishLoginStatus();
+            } else {
+                alert(data.token);
+            }
         })
         .catch((error) => {
             console.error('Error:', error);
         });
-
     }
 
-  return (
+    return (
         <form onSubmit={handleSubmit}>
             <label htmlFor="username">Email</label>
             <input 
@@ -103,7 +92,7 @@ function Login(props: LoginProps) {
             />
             <button type="submit">Log in</button>
         </form>
-  )
+    );
 }
 
-export default Login
+export default Login;

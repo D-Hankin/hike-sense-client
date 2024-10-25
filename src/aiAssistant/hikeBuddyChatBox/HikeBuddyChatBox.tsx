@@ -11,7 +11,7 @@ interface ChatBoxProps {
     userFirstName: string;
 }
 
-function ChatBox(props: ChatBoxProps) {
+function HikeBuddyChatBox(props: ChatBoxProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [userInput, setUserInput] = useState<string>('');
@@ -55,7 +55,6 @@ function ChatBox(props: ChatBoxProps) {
             }
 
             const data = await response.json();
-            console.log('AI response:', data);
 
             if (data.choices[0].message) {
                 const newMessage: Message = { name: 'Hike Buddy', prompt: data.choices[0].message.content};
@@ -130,7 +129,7 @@ function ChatBox(props: ChatBoxProps) {
                     placeholder="Ask something..."
                     style={{ width: '80%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
                 />
-                <button type="submit">
+                <button type="submit" style={{width: "25%", height: "40px", paddingTop: "6px" }}>
                     Send
                 </button>
             </form>
@@ -138,4 +137,4 @@ function ChatBox(props: ChatBoxProps) {
     );
 }
 
-export default ChatBox;
+export default HikeBuddyChatBox;
