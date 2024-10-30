@@ -6,6 +6,7 @@ interface TestPostProps {
     handleUserObject(user: User): unknown;
     modeUrl: string;
     handleLoginSuccess: () => void;
+    setButtonChoice: (choice: string) => void;
 }
 
 function CreateAccount(props: TestPostProps) {
@@ -62,8 +63,10 @@ function CreateAccount(props: TestPostProps) {
     }
 
   return (
-    <>
-        <div>Create Account</div>
+    <div className='createAccountDiv'>
+        <button onClick={() => props.setButtonChoice("")}>Back</button>
+        <div className='header'><h1>HikeSense</h1></div>
+        <div className='header'><h2>Create Account</h2></div>
         <form onSubmit={handleSubmit}>
             <label htmlFor="username">Email</label>
             <input 
@@ -120,7 +123,7 @@ function CreateAccount(props: TestPostProps) {
             : null 
         }
 
-    </>
+    </div>
   )
 }
 
