@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   GoogleMap,
   useJsApiLoader,
@@ -30,6 +30,7 @@ const CustomMap = () => {
   const [hikeName, setHikeName] = useState<string>("");
   const [apiLoaded, setApiLoaded] = useState(false);
   const [queuedQuery, setQueuedQuery] = useState<string | null>(null);
+  const directionsRef = useRef(false);
 
   const apiKey = import.meta.env.VITE_MAPS_API_KEY || "";
   const { isLoaded } = useJsApiLoader({
@@ -174,6 +175,10 @@ const CustomMap = () => {
   if (!isLoaded) return <div>Loading...</div>;
 
   const handleSaveBtnClick = () => {
+    if (hikeName.trim() === "") {
+      alert("Please enter a name for the hike.");
+      return;
+    }
     if (startLocation && finishLocation) {
       const fetchHttp = modeUrl + "/hike/new-hike";
       const token = "Bearer " + localStorage.getItem("token");
@@ -217,15 +222,28 @@ const CustomMap = () => {
     }
   }
 
+  const cancelHike = () => {
+    setStartLocation(null);
+    setFinishLocation(null);
+    setDirections(null);
+    setDistance("");
+    setDuration("");
+    setHikeName("");
+    setShowPopup(false);
+    directionsRef.current = false;
+  }
+
   return (
-    <div className="map-container" style={{ position: "relative" }}>
-      <input
-        type="text"
-        placeholder="Search for a location..."
-        value={searchQuery}
-        onChange={handleSearchChange}
-        style={{ margin: "10px", padding: "8px", borderRadius: "5px", width: "300px" }}
-      />
+    <div className="map-container" style={{ position: "relative", width: '100%' }}>
+      <div className="searchInputDiv">
+        <input
+          type="text"
+          placeholder="Search for a location..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{ width: '50%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc', marginTop: '10px' }}
+        />
+      </div>
       {searchResults.length > 0 && (
         <ul className="searchResults">
           {searchResults.map((result) => (
@@ -235,96 +253,102 @@ const CustomMap = () => {
           ))}
         </ul>
       )}
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={markerLocation || { lat: 55.385, lng: 13.359 }}
-        zoom={13}
-        onClick={handleMapClick}
-      >
-        {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png"/>}
-        {finishLocation && <Marker position={finishLocation} />}
-        {directions && startLocation && finishLocation && (
-          <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
-        )}
-        {clickedLocation && (
-          <InfoWindow position={clickedLocation}>
-            <div>
-              {!startLocation ? (
-                <button style={{marginBottom: "5px"}}
+      <div className="mapDiv">
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={markerLocation || { lat: 55.385, lng: 13.359 }}
+          zoom={13}
+          onClick={handleMapClick}
+        >
+          {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png"/>}
+          {finishLocation && <Marker position={finishLocation} />}
+          {directions && startLocation && finishLocation && directionsRef.current === true && (
+            <DirectionsRenderer directions={ directionsRef.current === true ? directions : null} options={{ suppressMarkers: true }} />
+          )}
+          {clickedLocation && (
+            <InfoWindow position={clickedLocation}>
+              <div>
+                {!startLocation ? (
+                  <button style={{marginBottom: "5px"}}
+                    onClick={() => {
+                      setStartLocation(clickedLocation);
+                      setClickedLocation(null);
+                    }}
+                  >
+                    Start Hiking Here
+                  </button>
+                ) : (
+                  <button style={{marginBottom: "5px"}}
+                    onClick={() => {
+                      setFinishLocation(clickedLocation);
+                      setClickedLocation(null);
+                      directionsRef.current = true;
+                    }}
+                  >
+                    Stop Hiking Here
+                  </button>
+                )}
+                <button
                   onClick={() => {
-                    setStartLocation(clickedLocation);
                     setClickedLocation(null);
+                    directionsRef.current = true;
+                    if (!startLocation) {
+                      setStartLocation(null);
+                    } else {
+                      setFinishLocation(null);
+                    }
                   }}
                 >
-                  Start Hiking Here
+                  Cancel
                 </button>
-              ) : (
-                <button style={{marginBottom: "5px"}}
-                  onClick={() => {
-                    setFinishLocation(clickedLocation);
-                    setClickedLocation(null);
-                  }}
-                >
-                  Stop Hiking Here
-                </button>
-              )}
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+        <div className="startStopDiv">
+          {startLocation ? (
+            <div className="startDiv">
+              <p>{"Start here - latitude: " + startLocation?.lat.toFixed(2) + ", longitude: " + startLocation?.lng.toFixed(2)}</p>
               <button
                 onClick={() => {
-                  setClickedLocation(null);
-                  if (!startLocation) {
-                    setStartLocation(null);
-                  } else {
-                    setFinishLocation(null);
-                  }
+                  setStartLocation(null);
+                  setClickedLocation(null); // Allow re-selection after removal
+                  setDirections(null); // Clear directions if start is removed
+                  setDistance("");
+                  setDuration("");
+                  directionsRef.current = false;
                 }}
               >
                 Remove
               </button>
             </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
-      <div className="startStopDiv">
-        {startLocation ? (
-          <div className="startDiv">
-            <p>{"Start here - latitude: " + startLocation?.lat.toFixed(2) + ", longitude: " + startLocation?.lng.toFixed(2)}</p>
-            <button
-              onClick={() => {
-                setStartLocation(null);
-                setClickedLocation(null); // Allow re-selection after removal
-                setDirections(null); // Clear directions if start is removed
-                setDistance("");
-                setDuration("");
-              }}
-            >
-              Remove
-            </button>
-          </div>
-        ) : (
-          <div>
-            <p>Start here: <i>Choose start location on map...</i></p>
-          </div>
-        )}
-        {finishLocation ? (
-          <div className="stopDiv">
-            <p>{"Finish here - latitude: " + finishLocation?.lat.toFixed(2) + ", longitude: " + finishLocation?.lng.toFixed(2)}</p>
-            <button
-              onClick={() => {
-                setFinishLocation(null);
-                setClickedLocation(null); // Allow re-selection after removal
-                setDirections(null); // Clear directions if finish is removed
-                setDistance("");
-                setDuration("");
-              }}
-            >
-              Remove
-            </button>
-          </div>
-        ) : (
-          <div>
-            <p>Finish here: <i>Choose finish location on map...</i></p>
-          </div>
-        )}
+          ) : (
+            <div className="startDiv">
+              <p>Start here: <i>Choose start location on map...</i></p>
+            </div>
+          )}
+          {finishLocation ? (
+            <div className="stopDiv">
+              <p>{"Finish here - latitude: " + finishLocation?.lat.toFixed(2) + ", longitude: " + finishLocation?.lng.toFixed(2)}</p>
+              <button
+                onClick={() => {
+                  setFinishLocation(null);
+                  setClickedLocation(null); // Allow re-selection after removal
+                  setDirections(null); // Clear directions if finish is removed
+                  setDistance("");
+                  setDuration("");
+                  directionsRef.current = false;
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="stopDiv">
+              <p>Finish here: <i>Choose finish location on map...</i></p>
+            </div>
+          )}
+        </div>
       </div>
       {showPopup && (
         <div className="popUpHikeDetails">
@@ -335,7 +359,7 @@ const CustomMap = () => {
           <p><strong>Duration:</strong> {duration}</p>
           <input placeholder="Name hike..." value={hikeName} onChange={(e) => setHikeName(e.target.value)}/>
           <button className="saveBtn" onClick={handleSaveBtnClick}>Save</button>
-          <button onClick={() => setShowPopup(false)}>Cancel</button>
+          <button onClick={cancelHike}>Cancel</button>
         </div>
       )}
     </div>
@@ -343,3 +367,4 @@ const CustomMap = () => {
 };
 
 export default CustomMap;
+

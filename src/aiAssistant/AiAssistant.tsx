@@ -1,4 +1,5 @@
 import HikeBuddyChatBox from "./hikeBuddyChatBox/HikeBuddyChatBox";
+import "./aiAssistant.css";
 
 interface AiAssistantProps {
   userFirstName: string;
@@ -7,7 +8,9 @@ interface AiAssistantProps {
 function AiAssistant(props: AiAssistantProps) {
   return (
     <div>
-      <h3>Hike Buddy</h3>
+      <div>
+        <h2 className="aiAssistantHeader">Hike Buddy</h2>
+      </div>
       <HikeBuddyChatBox userFirstName={props.userFirstName} />
     </div>
   )

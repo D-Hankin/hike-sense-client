@@ -1,0 +1,10 @@
+.upgradeDiv {
+    margin: 0 10px 0 10px;
+}
+
+.signUpHeader {
+    width: 100%;
+    background-color: rgb(0, 0, 0, 0.2);
+    padding: 5px;
+    height: fit-content;
+}

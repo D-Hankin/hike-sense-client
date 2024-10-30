@@ -2,5 +2,52 @@
     list-style: none;
     text-align: center;
     padding: 0;
-    margin: 0 ;
+    margin-left: 20px;
 }
+
+.addFriendDiv {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    flex-direction: row;
+    margin: 0 auto;
+    background-color:#1E1E1E;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.addFriendButton {
+    width: 20%;
+    margin-bottom: 12px;
+}
+
+.friendsHeader {
+    width: 100%;
+    background-color: rgb(0, 0, 0, 0.2);
+    padding: 5px;
+    height: fit-content;
+}
+
+.endChat {
+    width: 25%;
+    margin-right: 0;
+    margin-bottom: 10px
+}
+
+.friendNotificationDiv {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: darkgreen;
+    padding: 10px;
+    border: 5px solid #1E1E1E;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+

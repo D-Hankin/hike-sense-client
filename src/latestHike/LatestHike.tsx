@@ -59,31 +59,35 @@ const LatestHike: React.FC<Props> = (props) => {
   return (
     <>
       <div>
-        <h3>Latest Hike</h3>
-        {latestHike && <h3>{latestHike.name}</h3>}
+        <div className="latestHikeTitle">
+          <h2>Latest Hike</h2>
+        </div>
+        {latestHike && <h3 className="latestHikeTitle">{latestHike.name}</h3>}
       </div>
-      {startLocation && (
-        <GoogleMap
+      <div className="mapDiv">
+        {startLocation && (
+          <GoogleMap
           mapContainerStyle={containerStyle}
           center={startLocation}
           zoom={13}
-        >
-          {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png" />}
-          {finishLocation && <Marker position={finishLocation} />}
-          <Marker position={startLocation} />
-          {finishLocation && <Marker position={finishLocation} />}
-          {directions && (
-            <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
-          )}
-        </GoogleMap>
-      )}
-      {latestHike && (
-        <ul className="hikeInfo">  
-            <li>Distance: {latestHike.distance} meters</li>
-            <li>Time taken: {latestHike.duration} minutes</li>
-            <li>Avg. heartrate: {latestHike.avgHeartRate} bpm</li>
-        </ul>
-      )}
+          >
+            {startLocation && <Marker position={startLocation} icon="http://maps.google.com/mapfiles/ms/icons/green-dot.png" />}
+            {finishLocation && <Marker position={finishLocation} />}
+            <Marker position={startLocation} />
+            {finishLocation && <Marker position={finishLocation} />}
+            {directions && (
+              <DirectionsRenderer directions={directions} options={{ suppressMarkers: true }} />
+            )}
+          </GoogleMap>
+        )}
+        {latestHike && (
+          <ul className="hikeInfo">  
+              <li>Distance: {latestHike.distance} meters</li>
+              <li>Time taken: {latestHike.duration} minutes</li>
+              <li>Avg. heartrate: {latestHike.avgHeartRate} bpm</li>
+          </ul>
+        )}
+      </div>
     </>
   );
 }

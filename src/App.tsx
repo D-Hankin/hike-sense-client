@@ -7,7 +7,6 @@ import PlanHike from './planHike/PlanHike';
 import Logout from './logout/Logout';
 import UserOptions from './userOptions/UserOptions';
 import FriendsOnline from './friendsOnline/FriendsOnline';
-import Alerts from './alerts/Alerts';
 import LatestHike from './latestHike/LatestHike';
 import AiAssistant from './aiAssistant/AiAssistant';
 import { LoadScript } from '@react-google-maps/api';
@@ -76,18 +75,16 @@ function App() {
   return (
     <>
       {buttonChoice === '' && isLoggedIn === false ? (
-        <>
+        <div className="startScreen">
           <h1>HikeSense</h1>
           <Login modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
           <p>or</p>
           <button className="createAccountBtn" onClick={() => setButtonChoice("createAccount")}>Create Account</button>
-        </>
-      ) : isLoggedIn === false ? (
-        <button onClick={() => setButtonChoice("")}>Back</button>
+        </div>
       ) : null}
 
       {buttonChoice === 'createAccount' ? (
-        <CreateAccount modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} />
+        <CreateAccount modeUrl={modeUrl} handleLoginSuccess={handleLoginSuccess} handleUserObject={handleUserObject} setButtonChoice={setButtonChoice} />
       ) : null}
 
       {isLoggedIn && (
@@ -121,9 +118,6 @@ function App() {
             } 
             <div className='friendsOnlineDiv'>
               <FriendsOnline user={user} />
-            </div>
-            <div className='alertsDiv'>
-              <Alerts />
             </div>
           </div>
         </div>

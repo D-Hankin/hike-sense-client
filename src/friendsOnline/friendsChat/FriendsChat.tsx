@@ -27,8 +27,10 @@ const FriendsChat: React.FC<FriendsChatProps> = (props) => {
         console.log('Connected to chat websocket');
         
         stompClient.subscribe(`/topic/chat/${props.friendSelected}`, (message: IMessage) => {
+          console.log("subscribed to: ", `/topic/chat/${props.friendSelected}`);
           const chatMessage = JSON.parse(message.body);
           if (chatMessage && chatMessage.content) {
+            console.log('Received message:', chatMessage.content);
             setMessages((prevMessages) => [...prevMessages, props.friendSelected + ": " + chatMessage.content]);
           } else {
             console.error("Received malformed message:", message.body);

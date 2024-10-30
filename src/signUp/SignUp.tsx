@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from "./paymentForm/PaymentForm";
 import {loadStripe} from '@stripe/stripe-js';
+import './SignUp.css';
 
 interface Props {
     updateUserState: () => void;
@@ -26,8 +27,8 @@ function SignUp(props: Props) {
 
   return (
     <div>
-        <div>
-            <h3>Unlock Your Adventure!</h3> 
+        <h2 className="signUpHeader">Unlock Your Adventure!</h2> 
+        <div className="upgradeDiv">
             <p>Upgrade to Premium for only £10/month and gain access to our AI Assistant, your personal hiking companion. Get tailored tips on established trails, nearby restaurants, tourist attractions, and everything you need to enhance your hiking experience. Discover hidden gems and make the most of your outdoor adventures with expert recommendations at your fingertips. Sign up today and elevate your hikes!</p>
             <button className="upgradeBtn" onClick={openModal}>Upgrade Now!</button>
         </div>
