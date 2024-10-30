@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import modeUrl from '../../ModeUrl';
 import ReactMarkdown from 'react-markdown';
+import '../aiAssistant.css';
 
 interface Message {
     name: string;
@@ -80,15 +81,15 @@ function HikeBuddyChatBox(props: ChatBoxProps) {
 
     return (
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Chat messages container */}
             <div
                 style={{
                     width: '100%',
                     height: '400px',
                     overflowY: 'scroll',
-                    backgroundColor: '#f1f1f1',
                     padding: '10px',
                     borderRadius: '5px',
+                    maxWidth: '90%',
+                    backgroundColor: 'black',
                 }}
             >
                 {messages.map((message, index) => (
@@ -98,26 +99,29 @@ function HikeBuddyChatBox(props: ChatBoxProps) {
                             backgroundColor: message.name === props.userFirstName? 'grey' : 'green',
                             alignSelf: message.name === props.userFirstName ? 'flex-end' : 'flex-start',
                             textAlign: message.name === props.userFirstName ? 'right' : 'left',
-                            width: '80%',
+                            width: '%',
                             margin: '5px',
                             padding: '10px',
                             borderRadius: '5px',
                             color: 'white',
                         }}
                     >
-                        <strong>{message.name}</strong>: 
                         {message.name === 'Hike Buddy' ? (
-                            <ReactMarkdown>{message.prompt}</ReactMarkdown> // Render markdown for AI messages
+                        <>
+                            <strong>{message.name}:</strong>
+                            <ReactMarkdown>{message.prompt}</ReactMarkdown>
+                        </>    
                         ) : (
-                            message.prompt
+                            <>
+                            <strong>You:</strong>
+                            <br/><br/> {message.prompt}
+                            </>
                         )}
                     </div>
                 ))}
                 {loading && <div>Waiting...</div>}
                 <div ref={messagesEndRef} />
             </div>
-
-            {/* User input form */}
             <form
                 onSubmit={handleSubmit}
                 style={{ display: 'flex', marginTop: '10px', width: '100%', justifyContent: 'center' }}

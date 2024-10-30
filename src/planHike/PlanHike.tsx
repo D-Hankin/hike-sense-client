@@ -7,7 +7,7 @@ function PlanHike() {
 
   return (
     <>
-        <div className='planHikeInnerDiv'><h3>PlanHike</h3></div>
+        <div className='planHikeInnerDiv'><h2>Plan A Hike</h2></div>
         <CustomMaps />
     </>
   )

@@ -77,6 +77,25 @@ function PaymentForm(props: Props) {
         }
     };
 
+    const cardElementOptions = {
+        style: {
+          base: {
+            color: 'white',       // text color
+            padding: '5px',
+            fontSize: '16px',      // text size
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            '::placeholder': {       // placeholder text style
+              color: '#aab7c4',
+            },
+          },
+          invalid: {                 // styling for invalid card data
+            color: '#fa755a',
+            iconColor: '#fa755a',
+          },
+        },
+      };
+      
+
     return (
         <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()}>
             <label>
@@ -118,8 +137,8 @@ function PaymentForm(props: Props) {
                     required
                 />
             </label>
-            <CardElement />
-            <button type="submit" disabled={!stripe}>Pay</button>
+            <CardElement options={cardElementOptions} />
+            <button type="submit" disabled={!stripe} style={{marginTop: '10px'}}>Pay</button>
         </form>
     );
 }
