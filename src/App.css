@@ -60,7 +60,7 @@ h1 {
   background-color: darkgreen;
 }
 
-.aiAssistant {
+.aiAssistant, .signUpForPremium {
   margin-left: 100px;
   padding-bottom: 10px;
 }
