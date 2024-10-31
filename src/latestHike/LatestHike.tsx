@@ -82,8 +82,8 @@ const LatestHike: React.FC<Props> = (props) => {
         )}
         {latestHike && (
           <ul className="hikeInfo">  
-              <li>Distance: {latestHike.distance} meters</li>
-              <li>Time taken: {latestHike.duration} minutes</li>
+              <li>Distance: {latestHike.distance / 1000} km</li>
+              <li>Time taken: {Math.floor(latestHike.duration / 60)} hours {latestHike.duration % 60} minutes</li>
               <li>Avg. heartrate: {latestHike.avgHeartRate} bpm</li>
           </ul>
         )}

@@ -216,6 +216,8 @@ const CustomMap = () => {
       .finally(() => {
         setHikeName("");
         setShowPopup(false);
+        setStartLocation(null);
+        setFinishLocation(null);
       });
     } else {
       console.error("Start and finish locations must be set before saving the hike.");

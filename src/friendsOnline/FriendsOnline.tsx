@@ -240,24 +240,34 @@ function FriendsOnline(props: FriendsOnlineProps) {
       </div>
       <div className="friendRequestsDiv">
         <h3 className="friendsHeader">Friend Requests</h3>
-        <ul style={{listStyleType: 'none', textAlign: 'left'}}>
+        <ul style={{ listStyleType: 'none', textAlign: 'left' }}>
           {friendRequests.length === 0 ? (
             <li>No new friend requests</li>
           ) : (
             friendRequests.map((request) => (
-              <li key={request.id}>
+              <li key={request.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 {request.requester}
-                {!request.requester.includes('wants') ? null 
-                :
-                <>
-                  <button onClick={() => handleResponseBtnClick(request.id, 'ACCEPTED')}>Accept</button>
-                  <button onClick={() => handleResponseBtnClick(request.id, 'DECLINED')}>Decline</button>
-                </>
-                }
+                {!request.requester.includes('wants') ? null : (
+                  <>
+                    <button
+                      onClick={() => handleResponseBtnClick(request.id, 'ACCEPTED')}
+                      style={{ width: '20%' }}
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleResponseBtnClick(request.id, 'DECLINED')}
+                      style={{ width: '20%' }}
+                    >
+                      Decline
+                    </button>
+                  </>
+                )}
               </li>
             ))
           )}
         </ul>
+
       </div>
       <h2 className="friendsHeader">Chat with friends:</h2>
       {friendsOnline.length === 0 ? (
