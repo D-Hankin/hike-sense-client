@@ -4,6 +4,7 @@ import HikeHistory from './hikeHistory/HikeHistory';
 import './userOptions.css';
 import Weather from '../weather/Weather';
 import { User } from '../User';
+import FriendsActivity from './friendsActivity/FriendsActivity';
 
 interface UserOptionsProps {
   user: User;
@@ -83,6 +84,11 @@ function UserOptions(props: UserOptionsProps) {
         {activeComponent === 'accountDetails' && (
           <div ref={accountDetailsRef}>
             <AccountDetails user={props.user} handleUpdateState={props.handleUpdateState} handleIsModalOpen={handleIsModalOpen} />
+          </div>
+        )}
+        {activeComponent === 'friendsActivity' && (
+          <div ref={accountDetailsRef}>
+            <FriendsActivity user={props.user} />
           </div>
         )}
         {activeComponent === 'weather' && (
