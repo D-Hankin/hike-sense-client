@@ -21,10 +21,6 @@ Features
 
     -   Display of real-time health metrics, including heart rate and other statistics during hikes.
     -   Graphical representation of past hikes, routes, durations, and health metrics.
--   **Safety Alerts:**
-
-    -   Customizable alerts based on individual heart rate thresholds.
-    -   Notifications for users and their friends when safety alerts are triggered.
 -   **Hike Management:**
 
     -   Storage and retrieval of hike details, including routes, heart rate, temperature, and more.
