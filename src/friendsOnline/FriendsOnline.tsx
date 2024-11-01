@@ -20,7 +20,6 @@ function FriendsOnline(props: FriendsOnlineProps) {
   const [friendNotification, setFriendNotification] = useState<string>('');
 
   useEffect(() => {
-    // Fetch initial online friends from the database
     const fetchOnlineFriends = async () => {
       try {
         const token = "Bearer " + localStorage.getItem('token');
@@ -38,7 +37,6 @@ function FriendsOnline(props: FriendsOnlineProps) {
 
         const onlineFriends = await response.json();
 
-        // Extract usernames from the list of objects
         const usernames = onlineFriends.map((friend: { username: string }) => friend.username);
         setFriendsOnline(usernames);
       } catch (error) {
@@ -59,7 +57,6 @@ function FriendsOnline(props: FriendsOnlineProps) {
       onConnect: () => {
         console.log("Connected to websocket");
   
-        // Subscribe to online status of friends
         props.user.friends.forEach((friend) => {
           console.log("Subscribing to friend:", friend.usernameFriend);
   
@@ -111,13 +108,12 @@ function FriendsOnline(props: FriendsOnlineProps) {
           );
         });
   
-        // Subscribe to incoming friend requests
         stompClient.subscribe(
           `/topic/friend-requests/${props.user.username}`,
           (message) => {
             console.log("Incoming message:", message.body);
             try {
-              const request = message.body; // Assuming the message is a JSON string
+              const request = message.body; 
               setFriendRequests((prevRequests) => {
                 if (!prevRequests.some((r) => r.requester === request)) {
                   return [
@@ -138,7 +134,7 @@ function FriendsOnline(props: FriendsOnlineProps) {
       },
     });
   
-    stompClientRef.current = stompClient; // Store stompClient in the ref
+    stompClientRef.current = stompClient; 
     stompClient.activate();
   
     return () => {

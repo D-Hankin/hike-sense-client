@@ -13,18 +13,18 @@
 .mainBody {
   width: 100vw;
   display: flex;
-  flex-direction: column; /* Arrange items vertically */
-  align-items: center; /* Center align items horizontally */
+  flex-direction: column; 
+  align-items: center; 
   padding: 20px;
-  background-color: rgba(0, 0, 0, 0.7); /* Light background for better contrast */  
+  background-color: rgba(0, 0, 0, 0.7);   
   
 }
 
 .header {
   display: block;
-  align-items: center; /* Vertically center items */
+  align-items: center;
   width: 100%;
-  justify-content: space-between; /* Space between title and dropdown */
+  justify-content: space-between; 
 }
 
 h1 {
@@ -34,29 +34,29 @@ h1 {
 
 .welcomeMessage {
   font-size: 1.2rem;
-  margin-top: 10px; /* Space between title and welcome message */
+  margin-top: 10px; 
 }
 
 .userOptionsDiv {
-  margin-right: auto; /* Push user options to the left */
+  margin-right: auto; 
 }
 
 .gridContainer {
-  display: flex; /* Use flexbox */
-  flex-wrap: wrap; /* Allow wrapping of items */
-  justify-content: center; /* Space items evenly */
+  display: flex; 
+  flex-wrap: wrap; 
+  justify-content: center; 
   column-gap: 100px;
   row-gap: 30px; /* Space between items */
   width: 100%;
   margin-right: 5%;
-  margin-top: 20px; /* Space above the grid */
+  margin-top: 20px; 
 }
 
 .alertsDiv, .friendsOnlineDiv, .latestHikeDiv, .planHikeDiv, .aiAssistant, .signUpForPremium {
-  flex: 0 1 calc(40% - 50px); /* Each item takes up half the width, minus gap */
-  border-radius: 8px; /* Rounded corners */
-  background-color: #ffffff; /* White background for each card */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  flex: 0 1 calc(40% - 50px);
+  border-radius: 8px;
+  background-color: #ffffff; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
   background-color: darkgreen;
 }
 
@@ -65,14 +65,13 @@ h1 {
   padding-bottom: 10px;
 }
 
-/* Responsive design for smaller screens */
 @media (max-width: 600px) {
   .gridContainer {
-    flex-direction: column; /* Stack items in a single column on small screens */
+    flex-direction: column; 
   }
 
   .alertsDiv, .friendsOnlineDiv, .latestHikeDiv, .planHikeDiv, .aiAssistant {
-    flex: 1 1 100%; /* Each item takes full width on small screens */
+    flex: 1 1 100%; 
   }
 }
 

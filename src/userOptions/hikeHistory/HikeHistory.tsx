@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { User, Hike } from "../../User";
-import Modal from "react-modal"; // You'll need to install react-modal
+import Modal from "react-modal"; 
 
 interface HikeHistoryProps {
   user: User;
@@ -9,20 +9,17 @@ interface HikeHistoryProps {
 function HikeHistory({ user }: HikeHistoryProps) {
   const [selectedHike, setSelectedHike] = useState<Hike | null>(null);
   const [hikes, setHikes] = useState<Hike[]>(user.hikes);
-  const [isListOpen, setIsListOpen] = useState(true); // To control entire component visibility
-  const componentRef = useRef<HTMLDivElement>(null); // Reference to the component container
+  const [isListOpen, setIsListOpen] = useState(true); 
+  const componentRef = useRef<HTMLDivElement>(null);
 
-  // Open modal with selected hike details
   const openHikeModal = (hike: Hike) => {
     setSelectedHike(hike);
   };
 
-  // Close the modal
   const closeHikeModal = () => {
     setSelectedHike(null);
   };
 
-  // Toggle favorite status of a hike
   const toggleFavorite = () => {
     if (selectedHike) {
       const updatedHikes = hikes.map(hike =>
@@ -33,7 +30,6 @@ function HikeHistory({ user }: HikeHistoryProps) {
     }
   };
 
-  // Delete the hike
   const deleteHike = () => {
     if (selectedHike) {
       const updatedHikes = hikes.filter(hike => hike.name !== selectedHike.name);
@@ -42,16 +38,14 @@ function HikeHistory({ user }: HikeHistoryProps) {
     }
   };
 
-  // Detect click outside of the component and close it
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      // Check if the click is outside the component and not on the modal
       if (
         componentRef.current &&
         !componentRef.current.contains(event.target as Node) &&
-        !document.getElementById("hike-modal")?.contains(event.target as Node) // Ensure modal isn't clicked
+        !document.getElementById("hike-modal")?.contains(event.target as Node) 
       ) {
-        setIsListOpen(false); // Close the entire component if clicked outside
+        setIsListOpen(false); 
       }
     }
 
@@ -107,7 +101,7 @@ function HikeHistory({ user }: HikeHistoryProps) {
 
       {selectedHike && (
         <Modal
-          id="hike-modal" // Assign an ID to the modal for identification
+          id="hike-modal" 
           isOpen={true}
           onRequestClose={closeHikeModal}
           contentLabel="Hike Details"

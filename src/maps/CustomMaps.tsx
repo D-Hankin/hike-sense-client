@@ -61,10 +61,9 @@ const CustomMap = () => {
         setApiLoaded(true);
         clearInterval(interval);
 
-        // If a query was typed before the API loaded, process it now
         if (queuedQuery) {
           handleSearchChange({ target: { value: queuedQuery } } as React.ChangeEvent<HTMLInputElement>);
-          setQueuedQuery(null); // Clear the queued query after processing
+          setQueuedQuery(null);
         }
       }
     }, 100); // Check every 100ms
@@ -94,7 +93,6 @@ const CustomMap = () => {
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(result);
-            // Extract distance and duration
             if (result && result.routes && result.routes[0] && result.routes[0].legs && result.routes[0].legs[0]) {
               const leg = result.routes[0].legs[0];
               if (leg.distance && leg.duration) {
@@ -105,7 +103,7 @@ const CustomMap = () => {
                 console.error("Distance or duration is undefined");
               }
             }
-            setShowPopup(true); // Show the popup when directions are set
+            setShowPopup(true);
           } else {
             console.error(`Error fetching directions: ${status}`);
           }
@@ -115,7 +113,7 @@ const CustomMap = () => {
       setDirections(null);
       setDistance("");
       setDuration("");
-      setShowPopup(false); // Hide the popup if no finish location is set
+      setShowPopup(false); 
     }
   }, [startLocation, finishLocation]);
 
@@ -123,7 +121,6 @@ const CustomMap = () => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    // If the API isn't loaded yet, queue the query and exit
     if (!apiLoaded) {
       console.warn("Google Maps API is not loaded yet, queuing the query");
       setQueuedQuery(query);
@@ -314,8 +311,8 @@ const CustomMap = () => {
               <button
                 onClick={() => {
                   setStartLocation(null);
-                  setClickedLocation(null); // Allow re-selection after removal
-                  setDirections(null); // Clear directions if start is removed
+                  setClickedLocation(null); 
+                  setDirections(null); 
                   setDistance("");
                   setDuration("");
                   directionsRef.current = false;
@@ -335,8 +332,8 @@ const CustomMap = () => {
               <button
                 onClick={() => {
                   setFinishLocation(null);
-                  setClickedLocation(null); // Allow re-selection after removal
-                  setDirections(null); // Clear directions if finish is removed
+                  setClickedLocation(null); 
+                  setDirections(null); 
                   setDistance("");
                   setDuration("");
                   directionsRef.current = false;
