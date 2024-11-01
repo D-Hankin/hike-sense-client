@@ -18,7 +18,6 @@ function HikeBuddyChatBox(props: ChatBoxProps) {
     const [userInput, setUserInput] = useState<string>('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    // Automatically scroll to the bottom when new messages are added
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -27,16 +26,14 @@ function HikeBuddyChatBox(props: ChatBoxProps) {
         scrollToBottom();
     }, [messages]);
 
-    // Function to send the "Introduce yourself" message, but not show it on the screen
     useEffect(() => {
         const introduceMessage = async () => {
             const initialMessage = { name: props.userFirstName, prompt: 'Introduce yourself.' };
-            await sendMessageToAI(initialMessage); // Send introduction but don't show in messages
+            await sendMessageToAI(initialMessage);
         };
         introduceMessage();
     }, [props.userFirstName]);
 
-    // Fetch AI response
     const sendMessageToAI = async (userMessage: Message) => {
         setLoading(true);
         const token = 'Bearer ' + localStorage.getItem('token');
@@ -71,12 +68,12 @@ function HikeBuddyChatBox(props: ChatBoxProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (userInput.trim() === '') return; // Prevent empty messages
+        if (userInput.trim() === '') return;
 
         const newUserMessage: Message = { name: props.userFirstName, prompt: userInput };
         setMessages((prevMessages) => [...prevMessages, newUserMessage]);
-        setUserInput(''); // Clear input field
-        await sendMessageToAI(newUserMessage); // Send user message to AI and get response
+        setUserInput(''); 
+        await sendMessageToAI(newUserMessage);
     };
 
     return (

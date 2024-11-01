@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Modal from 'react-modal'; // Import Modal component
+import Modal from 'react-modal'; 
 import "./accountDetails.css"
 import { Elements } from "@stripe/react-stripe-js";
 import PaymentForm from "../../signUp/paymentForm/PaymentForm";
@@ -13,7 +13,7 @@ interface AccountDetailsProps {
     handleIsModalOpen: (value: boolean) => void;
 }
 
-Modal.setAppElement('#root'); // Set app element for modal accessibility
+Modal.setAppElement('#root');
 
 function AccountDetails(props: AccountDetailsProps) {
     const [isEditingUser, setIsEditingUser] = useState<boolean>(false);
@@ -22,8 +22,8 @@ function AccountDetails(props: AccountDetailsProps) {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false); // State for cancel confirmation modal
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false); // State for update subscription modal
+    const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false); 
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false); 
 
     const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -31,23 +31,19 @@ function AccountDetails(props: AccountDetailsProps) {
         setIsEditingUser(true);
     }
 
-    // Open cancel modal
     const handleCancelSubscriptionClick = () => {
         setIsCancelModalOpen(true);
     }
 
-    // Open update modal
     const handleUpdateSubscriptionClick = () => {
         setIsUpdateModalOpen(true);
     }
 
-    // Close modals
     const closeModal = () => {
         setIsCancelModalOpen(false);
         setIsUpdateModalOpen(false);
     }
 
-    // Handle subscription update confirmation
     const handleConfirmSubscriptionUpdate = async () => {
         closeModal();
         const fetchHttp = modeUrl + "/stripe/cancel";
@@ -131,7 +127,6 @@ function AccountDetails(props: AccountDetailsProps) {
                 </div>
             )}
 
-            {/* Cancel Subscription Modal */}
             <Modal
                 isOpen={isCancelModalOpen}
                 onRequestClose={closeModal}
@@ -162,8 +157,6 @@ function AccountDetails(props: AccountDetailsProps) {
                     </button>
                 </div>
             </Modal>
-
-            {/*Get Subscription Modal */}
             <Modal
             isOpen={isUpdateModalOpen}
             shouldCloseOnOverlayClick={false}

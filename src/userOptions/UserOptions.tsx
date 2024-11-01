@@ -18,15 +18,15 @@ function UserOptions(props: UserOptionsProps) {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const accountDetailsRef = useRef<HTMLDivElement>(null);
-  const isModalOpenRef = useRef(isModalOpen); // Ref to store latest state of `isModalOpen`
+  const isModalOpenRef = useRef(isModalOpen); 
 
   const handleComponentChange = (component: string) => {
     setActiveComponent(component);
-    setIsDropdownOpen(false); // Close dropdown after selecting an option
+    setIsDropdownOpen(false); 
   };
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown state
+    setIsDropdownOpen(!isDropdownOpen); 
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -35,13 +35,12 @@ function UserOptions(props: UserOptionsProps) {
         dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
         accountDetailsRef.current && !accountDetailsRef.current.contains(event.target as Node)
       ) {
-        setIsDropdownOpen(false); // Close dropdown if clicked outside
-        setActiveComponent(null); // Close account details if clicked outside
+        setIsDropdownOpen(false); 
+        setActiveComponent(null); 
       }
     }
   };
 
-  // Update the ref when isModalOpen changes
   useEffect(() => {
     isModalOpenRef.current = isModalOpen;
   }, [isModalOpen]);

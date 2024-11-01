@@ -7,8 +7,8 @@
 .startStopDiv {
   margin-top: 10px;
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  width: 95%; /* Full width for the div */
+  flex-direction: column;
+  width: 95%; 
   padding: 0;
 }
 
@@ -17,19 +17,19 @@
   justify-content: space-between;
   align-items: center;
   gap: 10px;
-  width: 100%; /* Full width for each row */
-  margin-bottom: 10px; /* Space between rows */
+  width: 100%;
+  margin-bottom: 10px; 
   margin-left: 10px;
 }
 
 .startDiv p, .stopDiv p {
-  margin: 0; /* Remove default margin */
+  margin: 0; 
 }
 
 .startDiv button, .stopDiv button {
-  margin-left: auto; /* Button aligned to the right */
+  margin-left: auto; 
   width: fit-content;
-  padding: 0 5px; /* Minimal padding for buttons */
+  padding: 0 5px; 
 }
 
 .popUpHikeDetails {
@@ -37,14 +37,14 @@
   top: 90px;
   right: 120px;
   background-color: black;
-  color: white; /* White text for contrast */
-  padding: 5px 10px; /* Smaller padding */
+  color: white; 
+  padding: 5px 10px; 
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  font-size: 12px; /* Smaller font */
-  line-height: 1.2; /* Reduced line spacing */
-  max-width: 200px; /* Restrict popup width */
+  font-size: 12px; 
+  line-height: 1.2; 
+  max-width: 200px; 
 }
 
 .saveBtn {
