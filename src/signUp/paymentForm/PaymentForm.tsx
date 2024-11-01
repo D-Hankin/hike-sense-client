@@ -32,13 +32,11 @@ function PaymentForm(props: Props) {
         const token = localStorage.getItem('token');
 
         if (!stripe || !elements) {
-            return; // Stripe.js has not yet loaded.
+            return; 
         }
 
         const fetchHttp = modeUrl + "/stripe/upgrade";
-
-        // Call your server to create the subscription and get clientSecret
-        const productId = 'prod_R5BGz44j6oBGBQ'; // Replace with the actual product ID
+        const productId = 'prod_R5BGz44j6oBGBQ'; 
         const response = await fetch(fetchHttp, {
             method: 'POST',
             headers: {
@@ -55,8 +53,6 @@ function PaymentForm(props: Props) {
         }
 
         const { clientSecret } = await response.json();
-
-        // Confirm the payment
         const cardElement = elements.getElement(CardElement);
         const { error } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
@@ -80,15 +76,15 @@ function PaymentForm(props: Props) {
     const cardElementOptions = {
         style: {
           base: {
-            color: 'white',       // text color
+            color: 'white',      
             padding: '5px',
-            fontSize: '16px',      // text size
+            fontSize: '16px',     
             fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            '::placeholder': {       // placeholder text style
+            '::placeholder': {      
               color: '#aab7c4',
             },
           },
-          invalid: {                 // styling for invalid card data
+          invalid: {                 
             color: '#fa755a',
             iconColor: '#fa755a',
           },

@@ -1,34 +1,34 @@
 .userOptionsDropdown {
-    position: relative; /* Ensures the dropdown is positioned relative to this container */
+    position: relative;
   }
   
   .choicesDiv {
-    position: absolute; /* Allows the dropdown to overlay other content */
+    position: absolute; 
     background-color: black;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 10; /* Ensures it overlays other content */
-    max-height: 500px; /* Set a max height for the dropdown */
-    opacity: 1; /* Fully visible */
-    width: fit-content; /* Width based on content */
+    z-index: 10; 
+    max-height: 500px; 
+    opacity: 1;
+    width: fit-content; 
   }
   
   .choicesBtns {
     display: block;
-    padding: 8px 12px; /* Adjust padding as needed */
+    padding: 8px 12px; 
     cursor: pointer;
-    margin: 5px; /* Adjust margin as needed */
-    white-space: nowrap; /* Prevent text from wrapping */
-    min-width: 150px; /* Set a minimum width for buttons */
-    text-align: left; /* Align text to the left */
-    color: white; /* Text color */
+    margin: 5px; 
+    white-space: nowrap; 
+    min-width: 150px; 
+    text-align: left; 
+    color: white; 
   }
   
   .choicesBtns:hover {
-    background-color: darkgreen; /* Highlight on hover */
+    background-color: darkgreen; 
   }
   
   .componentContainer {
-    margin-top: 10px; /* Optional: to create space between the dropdown and the components */
+    margin-top: 10px; 
   }
 
   .userOptionsTitle {

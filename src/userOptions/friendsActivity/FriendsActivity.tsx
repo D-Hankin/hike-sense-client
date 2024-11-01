@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { User, Hike, Friend } from "../../User"; // Adjust import based on your file structure
-import Modal from "react-modal"; // You'll need to install react-modal
+import { User, Hike, Friend } from "../../User"; 
+import Modal from "react-modal";
 
 interface FriendsActivityProps {
   user: User;
@@ -9,32 +9,28 @@ interface FriendsActivityProps {
 function FriendsActivity({ user }: FriendsActivityProps) {
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const [selectedHike, setSelectedHike] = useState<Hike | null>(null);
-  const [isListOpen, setIsListOpen] = useState(true); // To control the visibility of the component
-  const componentRef = useRef<HTMLDivElement>(null); // Reference to the component container
+  const [isListOpen, setIsListOpen] = useState(true); 
+  const componentRef = useRef<HTMLDivElement>(null); 
 
-  // Open modal with selected hike details
   const openHikeModal = (hike: Hike) => {
     setSelectedHike(hike);
   };
 
-  // Close the modal
   const closeHikeModal = () => {
     setSelectedHike(null);
   };
 
-  // Close the friend selection
   const closeFriendSelection = () => {
     setSelectedFriend(null);
   };
 
-  // Detect click outside of the component to close it
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
         componentRef.current &&
         !componentRef.current.contains(event.target as Node)
       ) {
-        setIsListOpen(false); // Close the entire component if clicked outside
+        setIsListOpen(false); 
       }
     }
 

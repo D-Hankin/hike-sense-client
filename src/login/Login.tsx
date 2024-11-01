@@ -16,7 +16,6 @@ function Login(props: LoginProps) {
     const [password, setPassword] = React.useState<string>('');
     const stompClientRef = useRef<Client | null>(null);
 
-    // WebSocket setup and publish function
     const publishLoginStatus = () => {
         const token = "Bearer " + localStorage.getItem('token');
         const websocketUrl = modeUrl + `/ws?token=${token}`; 
@@ -59,7 +58,6 @@ function Login(props: LoginProps) {
                 props.handleLoginSuccess();
                 props.handleUserObject(data.user);
                 
-                // Publish login status to notify friends
                 publishLoginStatus();
             } else {
                 alert(data.token);
